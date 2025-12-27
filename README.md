@@ -88,7 +88,7 @@ DB_NAME=
 DB_USER=
 DB_PASSWORD=
 
-MYSQL_ROOT_PASSWORD=root
+MYSQL_ROOT_PASSWORD=
 ```
 
 > ⚠️ El archivo `.env` **no se versiona**. Se incluye un `.env.example`.
