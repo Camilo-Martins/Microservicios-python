@@ -154,7 +154,7 @@ Próximos pasos:
 
 **Camilo**
 Ingeniero Informático
-Interés en arquitectura backend, Docker y microservicios
+- Interés en arquitectura backend, Docker y microservicios
 
 ---
 
