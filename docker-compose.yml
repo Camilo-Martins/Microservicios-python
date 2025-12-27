@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  authms:
+    build: ./authms
+    container_name: authms
+    command: >
+      sh -c "
+      echo 'Waiting fixed time for MySQL...';
+      sleep 15;
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
+      "
+    volumes:
+      - ./authms:/app
+    ports:
+      - '8001:8000'
+    depends_on:
+      - auth_db
+    env_file:
+      - .env
+
+  auth_db:
+    image: mysql:8
+    container_name: auth_db
+    env_file:
+      - .env
+    volumes:
+      - auth_db_data:/var/lib/mysql
+
+volumes:
+  auth_db_data:
