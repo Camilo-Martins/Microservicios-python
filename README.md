@@ -83,10 +83,10 @@ Ejemplo:
 
 ```env
 # Base de datos (ejemplo authMS)
-DB_HOST=auth-db
-DB_NAME=auth_db
-DB_USER=auth_user
-DB_PASSWORD=auth_pass
+DB_HOST=
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
 
 MYSQL_ROOT_PASSWORD=root
 ```
