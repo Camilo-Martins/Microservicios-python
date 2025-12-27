@@ -153,7 +153,7 @@ Próximos pasos:
 ## 👤 Autor
 
 **Camilo**
-Ingeniero Informático – SOC Entry Level
+Ingeniero Informático
 Interés en arquitectura backend, Docker y microservicios
 
 ---
