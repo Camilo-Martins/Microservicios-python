@@ -108,12 +108,20 @@ MYSQL_ROOT_PASSWORD=
 docker-compose up --build
 ```
 
-Accesos:
+### Accesos:
 
 - Backend (ejemplo authMS): `http://localhost:8001`
-- Frontend: `http://localhost:5173`
+- Frontend: `http://localhost:5173` (Proximamente)
 
 ---
+
+## Endpoins:
+
+- http://localhost:8001/api/v1/auth/registro
+- http://localhost:8001/api/v1/auth/confirmar-cuenta/<str:token>
+- http://localhost:8001/api/v1/auth/login
+- http://localhost:8001/api/v1/auth/recuperar-password
+- http://localhost:8001/api/v1/auth/cambiar-password/<str:token>
 
 ## 🗄️ Migraciones
 
@@ -154,6 +162,7 @@ Próximos pasos:
 
 **Camilo**
 Ingeniero Informático
+
 - Interés en arquitectura backend, Docker y microservicios
 
 ---

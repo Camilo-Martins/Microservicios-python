@@ -34,7 +34,7 @@ class Clasel(APIView):
         
         token = uuid.uuid4()
         url = os.getenv("BASE_URL")+"api/v1/auth/confirmar-cuenta/"+str(token)
-       
+        print(url)
 
         try:
            
@@ -47,7 +47,6 @@ class Clasel(APIView):
             
             UserMetaData.objects.create(token=token, user_id=u.id)
             
-            
             html=f"""
                     Hola {request.data["nombre"]}, para confirmar tu cuenta accede al siguiente enlace
                     <a href="{url}">aqui</a>
@@ -57,10 +56,13 @@ class Clasel(APIView):
             utils.sendEmail(html, "Verificacion", request.data["email"])
 
 
+
+
             return JsonResponse({"estado":"ok", "msg":"Registro exitoso"}, status=HTTPStatus.OK)
         
         except Exception as e:
-            return JsonResponse({"estado":"error", "msg":"Ha ocurrido un problema"}, status=HTTPStatus.BAD_REQUEST)
+            return JsonResponse({"estado":"error", "msg": "Error."}, status=HTTPStatus.BAD_REQUEST)
+
 
 
 class Clasell(APIView):
@@ -85,3 +87,108 @@ class Clasell(APIView):
             raise Http404
 
 
+class Claselll(APIView):
+
+    def post(self,request):
+       
+        if request.data.get("email") == None or not request.data.get("email"):
+            return JsonResponse({"estado": "error", "msg":"El campo correo es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
+        if request.data.get("password") == None or not request.data.get("password"):
+            return JsonResponse({"estado": "error", "msg":"El campo contraseña es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
+    
+        try:
+            user = User.objects.filter(email=request.data["email"]).get()
+           
+
+        except User.DoesNotExist:
+            return JsonResponse({"estado":"error", "mensaje": "Hubo un problema"}, status=HTTPStatus.BAD_REQUEST)
+
+     
+        auth = authenticate(request, username=user.username, password=request.data.get("password"))    
+        
+    
+        if auth is not None:
+          
+            fecha = datetime.now()
+            despues = fecha + timedelta(days=1)
+            fecha_numero = int(datetime.timestamp(despues))
+
+            payload={
+                "id": user.id,
+                "IIS": os.getenv("BASE_URL"),
+                "iat": int(time.time()),
+                "exp": int(fecha_numero)
+            }
+
+            try:
+                token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS512')
+                return JsonResponse({"id": user.id, "nombre": user.first_name, "token": token})
+
+            except Exception as e:
+                return JsonResponse({"estado":"error", "mensaje": "No es posible ingresar"}, status=404)
+        else:
+            return JsonResponse({"estado":"error", "mensaje": "Problemas al ingresar"}, status=404)
+        
+
+
+class ClaseIV(APIView):
+
+    def post(self,request):
+            
+        if request.data.get("email") == None or not request.data.get("email"):
+            return JsonResponse({"estado": "error", "msg":"El campo correo es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
+        
+        token = uuid.uuid4()
+        url = os.getenv("BASE_URL")+"api/v1/auth/resetear-password/"+str(token)
+        print(url)
+
+        try:
+            user = User.objects.filter(email=request.data["email"]).get()
+            UserMetaData.objects.filter(user_id=user.id).update(token=token)
+        
+
+            html=f"""
+                Hola {user.username}, para cambiar tu contraseña
+               <a href="{url}">aqui</a>
+                o copia y pega el siguiente enlace en tu navegador: {url}
+                """
+
+            utils.sendEmail(html, "Verificacion", request.data["email"])
+
+         
+
+            return JsonResponse({"estado":"correo enviado", "mensaje": "OK"}, status=HTTPStatus.OK)
+        except Exception as e :
+            return JsonResponse({"estado":"error", "mensaje": "No es posible ingresar"}, status=HTTPStatus.BAD_REQUEST)
+        
+
+class ClaseV(APIView):
+
+    def post(self,request,token):
+            
+        if request.data.get("password") == None or not request.data.get("password"):
+            return JsonResponse({"estado": "error", "msg":"Debe agregar una contraseña!"}, status=HTTPStatus.BAD_REQUEST)
+        
+        if token == None or not token:
+            return JsonResponse({"estado":"error", "msg":"La cuenta ya fue validada"}, status=Http404)
+
+        try:
+            data = UserMetaData.objects.filter(token=token).get()
+
+            UserMetaData.objects.filter(token=token).update(token="")
+
+          
+            user = User.objects.filter(id=data.user_id)
+            user.set_password(request.data.get("password"))
+            user.save()
+
+            html=f"""
+                Hola {user.username}, tu contraseña ha sido actualizada
+             
+                """
+
+            utils.sendEmail(html, "Verificacion", user.email)
+
+            return JsonResponse({"estado":"correo enviado", "mensaje": "OK"}, status=HTTPStatus.OK)
+        except Exception as e :
+            return JsonResponse({"estado":"error", "mensaje": "No es posible ingresar"}, status=HTTPStatus.BAD_REQUEST)

@@ -18,4 +18,4 @@ def sendEmail(html, asunto, para):
         server.sendmail(os.getenv("SMTP_USER"), para, msg.as_string())
         server.quit()
     except smtplib.SMTPResponseException as e:
-        print("error envio mai")
+        return e
