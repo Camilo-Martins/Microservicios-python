@@ -94,11 +94,11 @@ WSGI_APPLICATION = 'authMS.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv('DB_NAME'),
-        "USER": os.getenv('DB_USER'),
-        "PASSWORD": os.getenv('DB_PASSWORD'),
-        "HOST": os.getenv('DB_HOST'),
-        "PORT": os.getenv('DB_PORT'),
+        "NAME": os.getenv('AUTH_DB_NAME'),
+        "USER": os.getenv('AUTH_DB_USER'),
+        "PASSWORD": os.getenv('AUTH_DB_PASSWORD'),
+        "HOST": os.getenv('AUTH_DB_HOST'),
+        "PORT": os.getenv('AUTH_DB_PORT'),
         "OPTIONS": {
             "charset": "utf8mb4",
         },

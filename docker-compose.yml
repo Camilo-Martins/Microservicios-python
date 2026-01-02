@@ -1,16 +1,32 @@
 version: '3.9'
 
 services:
+  rrhhms:
+    build: ./rrhhms
+    container_name: rrhhms
+    volumes:
+      - ./rrhhms:/app
+    ports:
+      - '8003:8000'
+    depends_on:
+      - rrhh_db
+    env_file:
+      - .env
+
+  rrhh_db:
+    image: mysql:8
+    container_name: rrhh_db
+    environment:
+      MYSQL_DATABASE: ${HR_DB_NAME}
+      MYSQL_USER: ${HR_DB_USER}
+      MYSQL_PASSWORD: ${HR_DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - rrhh_db_data:/var/lib/mysql
+
   authms:
     build: ./authms
     container_name: authms
-    command: >
-      sh -c "
-      echo 'Waiting fixed time for MySQL...';
-      sleep 15;
-      python manage.py migrate &&
-      python manage.py runserver 0.0.0.0:8000
-      "
     volumes:
       - ./authms:/app
     ports:
@@ -23,10 +39,14 @@ services:
   auth_db:
     image: mysql:8
     container_name: auth_db
-    env_file:
-      - .env
+    environment:
+      MYSQL_DATABASE: ${AUTH_DB_NAME}
+      MYSQL_USER: ${AUTH_DB_USER}
+      MYSQL_PASSWORD: ${AUTH_DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root
     volumes:
       - auth_db_data:/var/lib/mysql
 
 volumes:
   auth_db_data:
+  rrhh_db_data:

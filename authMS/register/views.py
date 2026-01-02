@@ -121,7 +121,7 @@ class Claselll(APIView):
             }
 
             try:
-                token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS512')
+                token = jwt.encode(payload, os.getenv("SECRET_KEY"), algorithm='HS512')
                 return JsonResponse({"id": user.id, "nombre": user.first_name, "token": token})
 
             except Exception as e:
