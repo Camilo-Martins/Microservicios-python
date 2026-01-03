@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +28,7 @@ SECRET_KEY = 'django-insecure-$$cmycj&b5bic5rf-wa4uam70y)0z1&7ql(du8^g@2)vv)9vwt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'corsheaders',
+    'personal'
 ]
 
 MIDDLEWARE = [
@@ -47,9 +53,22 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'rrhhMS.urls'
+
+CORS_ORIGIN_ALLOW_ALL =True
+CORS_ALLOW_CREDENTIALS =True
+CORS_ORIGIN_WHITELIST=[
+    "http://localhost",
+    "http://localhost:8003"
+]
+CORS_ORIGIN_REGEX_WHITELIST= [
+    "http://localhost",
+    "http://localhost:8003"
+]
+
 
 TEMPLATES = [
     {
@@ -73,9 +92,16 @@ WSGI_APPLICATION = 'rrhhMS.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.getenv('HR_DB_NAME'),
+        "USER": os.getenv('HR_DB_USER'),
+        "PASSWORD": os.getenv('HR_DB_PASSWORD'),
+        "HOST": os.getenv('HR_DB_HOST'),
+        "PORT": os.getenv('HR_DB_PORT'),
+        "OPTIONS": {
+            "charset": "utf8mb4",
+        },
     }
 }
 
