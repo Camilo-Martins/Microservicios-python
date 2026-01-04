@@ -17,6 +17,7 @@ Este sistema está orientado a un **dueño o administrador de tienda**, que nece
 ❌ No es un sistema corporativo  
 ❌ No gestiona contratos, bonos ni liquidaciones  
 ❌ No busca cubrir todos los casos legales
+❌ No busca cubrir todos los casos legales
 
 El foco está en **simplicidad, realismo y mantenibilidad**.
 
@@ -26,7 +27,7 @@ El foco está en **simplicidad, realismo y mantenibilidad**.
 
 El proyecto está dividido en **microservicios independientes**, cada uno con una responsabilidad clara:
 
-```
+````
 
 PYTHONMS/
 ├── authMS/      # Autenticación de administradores (JWT)
@@ -34,10 +35,6 @@ PYTHONMS/
 ├── storeMS/     # Productos y stock (en desarrollo)
 ├── frontend/    # Vue 3 (en desarrollo)
 └── docker-compose.yml
-
-```
-
-Cada microservicio:
 
 - es una aplicación Django independiente
 - tiene su propia base de datos MySQL
@@ -60,19 +57,16 @@ Cada microservicio:
 ## ⚙️ Stack tecnológico
 
 ### Backend
-
 - Python 3
 - Django
 - Django REST Framework
 - MySQL
 
 ### Frontend
-
 - Vue 3 (planeado)
 - Vite
 
 ### Infraestructura
-
 - Docker
 - Docker Compose
 
@@ -88,8 +82,6 @@ Principios aplicados:
 - Variables de entorno externalizadas (`.env`)
 - Volúmenes para persistencia de datos
 
-El backend es **agnóstico a Docker**, siguiendo principios tipo _12-factor app_.
-
 ---
 
 ## 🔧 Configuración por variables de entorno
@@ -104,7 +96,7 @@ DB_NAME=
 DB_USER=
 DB_PASSWORD=
 MYSQL_ROOT_PASSWORD=
-```
+````
 
 El archivo `.env` **no se versiona**.
 Se incluye un `.env.example` como referencia.
@@ -152,6 +144,18 @@ Ejemplo de accesos:
 - CRUD completo de empleados
 - Endpoints protegidos por JWT
 - Acceso filtrado por dueño (multi-tenant)
+
+### Próximos pasos
+
+- Documentación de la API con Swagger
+- Registro de asistencia diaria
+- Registro de pagos diarios
+- Frontend básico en Vue
+- # Tests básicos por servicio
+
+* CRUD completo de empleados
+* Endpoints protegidos por JWT
+* Acceso filtrado por dueño (multi-tenant)
 
 ### Próximos pasos
 
