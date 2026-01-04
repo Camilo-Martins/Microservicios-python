@@ -1,6 +1,6 @@
 from django.db import models
-from dia_horario import DiaHorario
-from ...personal.models.empleado import UserMetaData
+from .dia_horario import DiaHorario
+from personal.models import Empleado
 
 class AsignacionDia(models.Model):
     dia = models.ForeignKey(
@@ -10,7 +10,7 @@ class AsignacionDia(models.Model):
     )
 
     empleado = models.ForeignKey(
-        UserMetaData,
+        Empleado,
         on_delete=models.PROTECT
     )
 

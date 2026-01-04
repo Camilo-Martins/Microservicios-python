@@ -36,7 +36,6 @@ class Clasel(APIView):
 
         try:
             data = Empleado.objects.filter(admin_id=resuelto["id"], id=id).get()
-            print(data)
             return JsonResponse({"data":{"id": data.id, "nombre_completo":data.nombre_completo,
                                          "created_at":DateFormat(data.created_at).format('d/m/Y'), "rol":data.rol,
                                          "pago_diario":data.pago_diario,
@@ -64,10 +63,17 @@ class Clasel(APIView):
             return JsonResponse({"estado": "error", "msg":"El campo rol es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
         if request.data.get("pago_diario") == None or not request.data.get("pago_diario"):
             return JsonResponse({"estado": "error", "msg":"El campo pago_diario es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
+        if request.data.get("rut") == None or not request.data.get("rut"):
+            return JsonResponse({"estado": "error", "msg":"El campo rut es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
         
-         #Validación usuario unico
+        #Validación usuario unico
         if Empleado.objects.filter(telefono=request.data["telefono"]).exists():
             return JsonResponse({"estado":"error", "msg":"Ya existe un empleado asociado a este telefono"}, status=HTTPStatus.BAD_REQUEST)
+
+
+            #Validación usuario unico
+        if Empleado.objects.filter(telefono=request.data["rut"]).exists():
+            return JsonResponse({"estado":"error", "msg":"Ya existe un empleado asociado a este rut"}, status=HTTPStatus.BAD_REQUEST)
 
 
         try:
@@ -75,6 +81,8 @@ class Clasel(APIView):
                                         telefono=request.data["telefono"], 
                                         rol=request.data["rol"], 
                                         is_active=True,
+                                        rut=request.data["rut"],
+                                        medio_pago=request.data["medio_pago"],
                                         pago_diario=request.data["pago_diario"],
                                         admin_id=resuelto["id"])
             return JsonResponse({"estado":"ok", "msg":"Registro exitoso"}, status=HTTPStatus.OK)
@@ -103,12 +111,26 @@ class Clasel(APIView):
         if request.data.get("pago_diario") == None or not request.data.get("pago_diario"):
             return JsonResponse({"estado": "error", "msg":"El campo pago_diario es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
         
+        if request.data.get("rut") == None or not request.data.get("rut"):
+            return JsonResponse({"estado": "error", "msg":"El campo rut es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
+        
+        #Validación usuario unico
+        if Empleado.objects.filter(telefono=request.data["telefono"]).exists():
+            return JsonResponse({"estado":"error", "msg":"Ya existe un empleado asociado a este telefono"}, status=HTTPStatus.BAD_REQUEST)
+
+
+            #Validación usuario unico
+        if Empleado.objects.filter(telefono=request.data["rut"]).exists():
+            return JsonResponse({"estado":"error", "msg":"Ya existe un empleado asociado a este rut"}, status=HTTPStatus.BAD_REQUEST)
+
 
         try:
             Empleado.objects.filter(admin_id=resuelto["id"], id=id).update(nombre_completo=request.data["nombre_completo"], 
                                         telefono=request.data["telefono"], 
                                         rol=request.data["rol"], 
                                         is_active=True,
+                                        rut=request.data["rut"],
+                                        medio_pago=request.data["medio_pago"],
                                         pago_diario=request.data["pago_diario"],
                                         admin_id=resuelto["id"])
             return JsonResponse({"estado":"ok", "msg":"Empleado actualizado"}, status=HTTPStatus.OK)

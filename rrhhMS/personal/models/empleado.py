@@ -14,6 +14,9 @@ class Empleado(models.Model):
         help_text="Monto acordado por día trabajado"
     )
 
+    rut = models.CharField(max_length=12, blank=True, null=True, default=999999)
+    medio_pago = models.CharField(max_length=20, blank=True, null=True, default="Seleccione")
+
     created_at = models.DateTimeField(
         auto_now_add=True,
         help_text="Referencia de cuándo comenzaron a trabajar juntos"

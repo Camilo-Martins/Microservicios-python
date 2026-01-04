@@ -1,5 +1,5 @@
 from django.db import models
-from horario_semana import HorarioSemanal
+from .horario_semana import HorarioSemanal
 
 class DiaHorario(models.Model):
     horario = models.ForeignKey(
