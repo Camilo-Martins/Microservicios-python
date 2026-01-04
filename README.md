@@ -1,4 +1,3 @@
-```markdown
 # 🏪 Sistema de Gestión Operativa para Pequeños Comercios
 
 Proyecto de portafolio enfocado en el diseño y construcción de un **sistema backend realista**, pensado para la operación diaria de un **comercio pequeño (tienda de barrio)**.
@@ -179,6 +178,3 @@ Interés en:
 Este proyecto es **open source** y fue construido con fines educativos y de portafolio.
 Se prioriza **claridad, decisiones conscientes y evolución incremental**, por sobre la acumulación de funcionalidades.
 
-```
-
-```
