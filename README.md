@@ -1,44 +1,59 @@
-# 🏪 Sistema de Gestión de Tienda, Productos y Empleados
+# 🏪 Sistema de Gestión Operativa para Pequeños Comercios
 
-Proyecto de **portafolio** orientado a demostrar buenas prácticas en **arquitectura backend**, **contenedorización con Docker** y **separación de responsabilidades** entre servicios.
+Proyecto de portafolio enfocado en el diseño y construcción de un **sistema backend realista**, pensado para la operación diaria de un **comercio pequeño (tienda de barrio)**.
+
+El objetivo del proyecto es demostrar **criterio técnico**, buenas prácticas y capacidad de **modelar un dominio real**, priorizando claridad arquitectónica por sobre complejidad innecesaria.
 
 ---
 
-## 🎯 Objetivo del proyecto
+## 🎯 Propósito del proyecto
 
-Construir un sistema modular para la gestión de:
+Este sistema está orientado a un **dueño o administrador de tienda**, que necesita gestionar la operación diaria de forma simple:
 
-- **Autenticación y usuarios**
-- **Productos y stock**
-- **Empleados / RRHH**
+- gestión de empleados
+- control básico de la información laboral
+- base para asistencia, pagos y horarios
 
-El foco del proyecto no es solo la funcionalidad, sino:
+❌ No es un sistema corporativo  
+❌ No gestiona contratos, bonos ni liquidaciones  
+❌ No busca cubrir todos los casos legales
 
-- diseño limpio
-- uso correcto de Docker
-- configuración desacoplada
-- estructura defendible en entrevistas técnicas
+El foco está en **simplicidad, realismo y mantenibilidad**.
 
 ---
 
 ## 🧱 Arquitectura general
 
-El sistema está compuesto por **múltiples microservicios**, cada uno con:
+El proyecto está dividido en **microservicios independientes**, cada uno con una responsabilidad clara:
 
-- su propia aplicación Django
-- su propia base de datos MySQL
-- configuración independiente vía variables de entorno
-
-```text
-PYTHONMS/
-├── authMS/      # Autenticación y usuarios
-├── storeMS/     # Productos y stock
-├── rrhhMS/      # Empleados
-├── frontend/    # Vue 3
-└── docker-compose.yml
 ```
 
-Cada servicio se comunica a través de la red interna de Docker Compose.
+PYTHONMS/
+├── authMS/      # Autenticación de administradores (JWT)
+├── rrhhMS/      # Gestión operativa de empleados
+├── storeMS/     # Productos y stock (en desarrollo)
+├── frontend/    # Vue 3 (en desarrollo)
+└── docker-compose.yml
+
+```
+
+Cada microservicio:
+
+- es una aplicación Django independiente
+- tiene su propia base de datos MySQL
+- se configura exclusivamente mediante variables de entorno
+- se comunica a través de la red interna de Docker Compose
+
+---
+
+## 🔐 Autenticación y modelo de acceso
+
+- Solo los **administradores/dueños** se autentican en el sistema
+- Autenticación basada en **JWT**
+- Los empleados **no son usuarios del sistema**
+- El acceso a los datos se controla por:
+  - identidad validada por token
+  - pertenencia de los recursos al admin autenticado
 
 ---
 
@@ -48,12 +63,12 @@ Cada servicio se comunica a través de la red interna de Docker Compose.
 
 - Python 3
 - Django
+- Django REST Framework
 - MySQL
-- Django REST Framework (si aplica)
 
 ### Frontend
 
-- Vue 3
+- Vue 3 (planeado)
 - Vite
 
 ### Infraestructura
@@ -65,37 +80,38 @@ Cada servicio se comunica a través de la red interna de Docker Compose.
 
 ## 🐳 Docker y contenedores
 
-### Principios aplicados
+Principios aplicados:
 
-- Un servicio = un contenedor
+- Un microservicio = un contenedor
 - Una base de datos por microservicio
-- Bases de datos **no expuestas** al host por defecto
+- Bases de datos no expuestas al host
 - Variables de entorno externalizadas (`.env`)
 - Volúmenes para persistencia de datos
 
+El backend es **agnóstico a Docker**, siguiendo principios tipo _12-factor app_.
+
 ---
 
-## 🔐 Configuración por variables de entorno
+## 🔧 Configuración por variables de entorno
 
-El proyecto utiliza un archivo `.env` como **fuente única de configuración**.
+Toda la configuración sensible se gestiona mediante un archivo `.env`.
 
 Ejemplo:
 
 ```env
-# Base de datos (ejemplo authMS)
 DB_HOST=
 DB_NAME=
 DB_USER=
 DB_PASSWORD=
-
 MYSQL_ROOT_PASSWORD=
 ```
 
-> ⚠️ El archivo `.env` **no se versiona**. Se incluye un `.env.example`.
+El archivo `.env` **no se versiona**.
+Se incluye un `.env.example` como referencia.
 
 ---
 
-## ▶️ Ejecución del proyecto (local)
+## ▶️ Ejecución local
 
 ### Requisitos
 
@@ -108,52 +124,41 @@ MYSQL_ROOT_PASSWORD=
 docker-compose up --build
 ```
 
-### Accesos:
+Ejemplo de accesos:
 
-- Backend (ejemplo authMS): `http://localhost:8001`
-- Frontend: `http://localhost:5173` (Proximamente)
-
----
-
-## Endpoins:
-
-- http://localhost:8001/api/v1/auth/registro
-- http://localhost:8001/api/v1/auth/confirmar-cuenta/<str:token>
-- http://localhost:8001/api/v1/auth/login
-- http://localhost:8001/api/v1/auth/recuperar-password
-- http://localhost:8001/api/v1/auth/cambiar-password/<str:token>
-
-## 🗄️ Migraciones
-
-Una vez levantado el sistema:
-
-```bash
-docker-compose exec authms python manage.py migrate
-docker-compose exec authms python manage.py createsuperuser
-```
-
-(Repetir por cada microservicio si aplica).
+- authMS: [http://localhost:8001](http://localhost:8001)
+- rrhhthMS: [http://localhost:8003](http://localhost:8003)
+- storethMS: [http://localhost:8004](http://localhost:8004) (proximamente)
+- frontend: [http://localhost:5173](http://localhost:5173) (proximamente)
 
 ---
 
 ## 🧠 Decisiones de diseño destacadas
 
-- No se usan credenciales hardcodeadas en el código
-- El backend es agnóstico a Docker (12-factor style)
-- Cada microservicio puede evolucionar de forma independiente
-- Configuración pensada para portafolio y entrevistas
+- Separación clara entre autenticación y dominios de negocio
+- Empleados modelados como entidades operativas, no como usuarios
+- JWT como contrato entre servicios
+- Soft delete para mantener historial
+- Alcance acotado y defendible en entrevistas técnicas
 
 ---
 
 ## 📌 Estado del proyecto
 
-🟢 En desarrollo activo
+🟢 **En desarrollo activo**
 
-Próximos pasos:
+### Funcionalidades actuales
 
-- Documentar endpoints
-- Agregar autenticación JWT
-- Integración frontend-backend
+- CRUD completo de empleados
+- Endpoints protegidos por JWT
+- Acceso filtrado por dueño (multi-tenant)
+
+### Próximos pasos
+
+- Documentación de la API con Swagger
+- Registro de asistencia diaria
+- Registro de pagos diarios
+- Frontend básico en Vue
 - Tests básicos por servicio
 
 ---
@@ -163,10 +168,16 @@ Próximos pasos:
 **Camilo**
 Ingeniero Informático
 
-- Interés en arquitectura backend, Docker y microservicios
+Interés en:
+
+- arquitectura backend
+- Docker y microservicios
+- diseño de sistemas reales
+- proyectos de portafolio con criterio técnico
 
 ---
 
 ## 📝 Nota
 
-Este proyecto fue construido con fines **educativos y de portafolio**, priorizando claridad arquitectónica y buenas prácticas por sobre complejidad innecesaria.
+Este proyecto es **open source** y fue construido con fines educativos y de portafolio.
+Se prioriza **claridad, decisiones conscientes y evolución incremental**, por sobre la acumulación de funcionalidades.
