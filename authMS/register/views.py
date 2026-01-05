@@ -14,9 +14,29 @@ from dotenv import load_dotenv
 from .models import *
 from utils import utils
 
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 # Create your views here.
 
 class Clasel(APIView):
+
+    @swagger_auto_schema(
+            operation_description="Endpoint registro",
+            responses={
+                200:"Success",
+                400:"Bad Request"
+            },
+            request_body=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'email': openapi.Schema(type=openapi.TYPE_STRING, description="email"),
+                    'nombre': openapi.Schema(type=openapi.TYPE_STRING, description="nombre"),
+                    'password': openapi.Schema(type=openapi.TYPE_STRING, description="password")
+                },
+                required=['email', 'nombre', 'password']
+            )
+    )
 
     def post(self, request):
 
@@ -34,8 +54,7 @@ class Clasel(APIView):
         
         token = uuid.uuid4()
         url = os.getenv("BASE_URL")+"api/v1/auth/confirmar-cuenta/"+str(token)
-        print(url)
-
+    
         try:
            
             u=User.objects.create_user(username=request.data["nombre"], 
@@ -55,14 +74,10 @@ class Clasel(APIView):
 
             utils.sendEmail(html, "Verificacion", request.data["email"])
 
-
-
-
             return JsonResponse({"estado":"ok", "msg":"Registro exitoso"}, status=HTTPStatus.OK)
         
         except Exception as e:
             return JsonResponse({"estado":"error", "msg": "Error."}, status=HTTPStatus.BAD_REQUEST)
-
 
 
 class Clasell(APIView):
@@ -88,6 +103,23 @@ class Clasell(APIView):
 
 
 class Claselll(APIView):
+
+    @swagger_auto_schema(
+        operation_description="Endpoint login",
+        responses={
+            200:"Success",
+            400:"Bad Request"
+        },
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'email': openapi.Schema(type=openapi.TYPE_STRING, description="email"),
+                'password': openapi.Schema(type=openapi.TYPE_STRING, description="password")
+            },
+            required=['email', 'password']
+        )
+    )
+
 
     def post(self,request):
        
@@ -133,6 +165,23 @@ class Claselll(APIView):
 
 class ClaseIV(APIView):
 
+    @swagger_auto_schema(
+        operation_description="Endpoint recuperar contraseña",
+        responses={
+            200:"Success",
+            400:"Bad Request"
+        },
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'email': openapi.Schema(type=openapi.TYPE_STRING, description="email"),
+            
+            },
+            required=['email']
+        )
+    )
+
+
     def post(self,request):
             
         if request.data.get("email") == None or not request.data.get("email"):
@@ -163,6 +212,22 @@ class ClaseIV(APIView):
         
 
 class ClaseV(APIView):
+
+    @swagger_auto_schema(
+        operation_description="Endpoint cambiar contraseña",
+        responses={
+            200:"Success",
+            400:"Bad Request"
+        },
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'password': openapi.Schema(type=openapi.TYPE_STRING, description="password")
+            },
+            required=['password']
+        )
+    )
+
 
     def post(self,request,token):
             

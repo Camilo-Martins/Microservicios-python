@@ -7,3 +7,5 @@ python-dotenv
 django-autoslug
 python-jose
 django-cors-headers
+drf-yasg
+setuptools

@@ -2,9 +2,9 @@ from django.urls import path
 from .views import*
 
 urlpatterns = [
-    path('registro-empleado', Clasel.as_view()),
-    path('obtener-empleados', Clasel.as_view()),
-    path('obtener-empleado/<int:id>', Clasel.as_view()),
-    path('editar-empleado/<int:id>', Clasel.as_view()),
-    path('desactivar-empleado/<int:id>', Clasel.as_view())
+    path('registro-empleado', RegistroEmpleado.as_view()),
+    path('obtener-empleados', ObtenerEmpleados.as_view()),
+    path('obtener-empleado/<int:id>', ObtenerEmpleado.as_view()),
+    path('desactivar-empleado/<int:id>', DesactivarEmpleado.as_view()),
+    path('editar-empleado/<int:id>', EditarEmpleado.as_view())
 ]

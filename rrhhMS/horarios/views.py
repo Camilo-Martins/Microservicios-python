@@ -16,14 +16,24 @@ from decorators.decorators import logueado
 from .models.horario_semana import*
 from .serializers import*
 
+#Swagger
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 # Create your views here.
 
 
 #HORARIO
 
-class Clasel(APIView):
-    
+class ObtenerHorarios(APIView):  
     @logueado()
+    @swagger_auto_schema(
+            operation_description="Endpoint Obtener horarios",
+            responses={
+                200:"Success",
+                400:"Bad Request"
+            },
+    )
     def get(self, request):
         header = request.headers.get('Authorization').split(" ")
         resuelto=jwt.decode(header[1], os.getenv("SECRET_KEY"), algorithms=['HS512'] )
@@ -32,8 +42,15 @@ class Clasel(APIView):
         datos_json= HorarioSerializer(data, many=True)
         return JsonResponse({"data":datos_json.data})
 
-
+class ObtenerHorario(APIView):
     @logueado()
+    @swagger_auto_schema(
+            operation_description="Endpoint Obtener horario por ID",
+            responses={
+                200:"Success",
+                400:"Bad Request"
+            },
+    )
     def get(self, request,id):
         header = request.headers.get('Authorization').split(" ")
         resuelto=jwt.decode(header[1], os.getenv("SECRET_KEY"), algorithms=['HS512'] )
@@ -50,8 +67,15 @@ class Clasel(APIView):
         except Exception as e:
             return JsonResponse({"estado":"error", "mensaje":"Recurso no disponible"}, status=HTTPStatus.NOT_FOUND)
 
-
+class CrearHorario(APIView):
     @logueado()
+    @swagger_auto_schema(
+            operation_description="Endpoint Creacion Horario ( Forma automatica )",
+            responses={
+                200:"Success",
+                400:"Bad Request"
+            },
+    )
     def post(self, request):
 
         header = request.headers.get('Authorization').split(" ")
@@ -81,8 +105,15 @@ class Clasel(APIView):
         except Exception as e:
             return JsonResponse({"estado":"error", "mensaje": "Error al crear horario"}, status=HTTPStatus.NOT_FOUND)
 
-
+class DesactivarHorario(APIView):
     @logueado()
+    @swagger_auto_schema(
+            operation_description="Endpoint Desactivar Horario (Forma automatica)",
+            responses={
+                200:"Success",
+                400:"Bad Request"
+            },
+    )
     def patch(self, request, id):
 
         header = request.headers.get('Authorization').split(" ")
