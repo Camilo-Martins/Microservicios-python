@@ -4,7 +4,7 @@ from .empleado import Empleado
 class Asistencia(models.Model):
     empleado = models.ForeignKey(Empleado, on_delete=models.CASCADE)
     fecha = models.DateField()
-    asistio = models.BooleanField()
+    asistio = models.BooleanField(default=True)
 
     registrado_por_admin = models.BooleanField(default=True)
 

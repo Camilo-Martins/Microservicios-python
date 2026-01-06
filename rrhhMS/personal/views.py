@@ -5,12 +5,14 @@ from django.http.response import JsonResponse
 from http import HTTPStatus
 from django.http import Http404
 from .models.empleado import*
+from .models.asistencia import*
 from django.utils.dateformat import DateFormat
+from horarios.models import*
 from dotenv import load_dotenv
 import os
 from datetime import datetime
 from jose import jwt
-
+from datetime import timedelta
 from decorators.decorators import logueado
 from .serializers import EmpleadoSerializer
 
@@ -80,6 +82,7 @@ class RegistroEmpleado(APIView):
                     'nombre_completo': openapi.Schema(type=openapi.TYPE_STRING, description="nombre_completo"),
                     'telefono': openapi.Schema(type=openapi.TYPE_STRING, description="telefono"),
                     'rol': openapi.Schema(type=openapi.TYPE_STRING, description="rol"),
+                    'medio_pago': openapi.Schema(type=openapi.TYPE_STRING, description="medio_pago"),
                     'pago_diario': openapi.Schema(type=openapi.TYPE_INTEGER, description="pago_diario"),
                     'rut': openapi.Schema(type=openapi.TYPE_STRING, description="rut")
                 },
@@ -105,12 +108,12 @@ class RegistroEmpleado(APIView):
         
         #Validación usuario unico
         if Empleado.objects.filter(telefono=request.data["telefono"]).exists():
-            return JsonResponse({"estado":"error", "msg":"Ya existe un empleado asociado a este telefono"}, status=HTTPStatus.BAD_REQUEST)
+            return JsonResponse({"estado":"error", "msg":request.data["telefono"] }, status=HTTPStatus.BAD_REQUEST)
 
 
             #Validación usuario unico
-        if Empleado.objects.filter(telefono=request.data["rut"]).exists():
-            return JsonResponse({"estado":"error", "msg":"Ya existe un empleado asociado a este rut"}, status=HTTPStatus.BAD_REQUEST)
+        if Empleado.objects.filter(rut=request.data["rut"]).exists():
+            return JsonResponse({"estado":"error", "msg":request.data["rut"]}, status=HTTPStatus.BAD_REQUEST)
 
 
         try:
@@ -124,7 +127,7 @@ class RegistroEmpleado(APIView):
                                         admin_id=resuelto["id"])
             return JsonResponse({"estado":"ok", "msg":"Registro exitoso"}, status=HTTPStatus.OK)
         except Exception as e:
-            return JsonResponse({"estado":"error", "msg":"Ya existe un empleado asociado a este telefono"}, status=HTTPStatus.BAD_REQUEST)
+            return JsonResponse({"estado":"error", "msg":"Error!"}, status=HTTPStatus.BAD_REQUEST)
 
 class DesactivarEmpleado(APIView):
     @logueado()
@@ -219,3 +222,43 @@ class EditarEmpleado(APIView):
             return JsonResponse({"estado":"ok", "msg":"Empleado actualizado"}, status=HTTPStatus.OK)
         except Exception as e:
             return JsonResponse({"estado":"error", "msg":"Hubo un error al modificar el emplado"}, status=HTTPStatus.BAD_REQUEST)
+        
+
+
+class AsistenciaEmpleado(APIView):
+    @logueado()
+    def post(self, request, id):
+
+        header = request.headers.get('Authorization').split(" ")
+        resuelto=jwt.decode(header[1], os.getenv("SECRET_KEY"), algorithms=['HS512'] )
+
+        #Validar si horario existe
+        try:
+            horario = HorarioSemanal.objects.filter(admin_id=resuelto["id"], id=id).get()
+        except HorarioSemanal.DoesNotExist:
+            return JsonResponse({"estado":"error", 
+                                "mensaje":"Recurso no disponible"}, 
+                                status=HTTPStatus.NOT_FOUND)
+
+
+        try:
+            empleado = Empleado.objects.filter(id=request.data["empleado_id"]).get()
+        except HorarioSemanal.DoesNotExist:
+            return JsonResponse({"estado":"error", 
+                                "mensaje":"Recurso no disponible"}, 
+                                status=HTTPStatus.NOT_FOUND)
+
+
+        #Recibir el dia e id del empleado
+        fecha_asistencia = horario.fecha_inicio + timedelta(days=request.data["dia"] - 1)
+      
+        try:
+            Asistencia.objects.create(
+                    empleado=empleado, 
+                    asistio = request.data["asistencia"],
+                    fecha = fecha_asistencia
+
+            )
+            return JsonResponse({"estado":"ok", "msg":"Asistencia Registrada"}, status=HTTPStatus.OK)
+        except Exception as e:
+            return JsonResponse({"estado":"error", "msg":"Hubo un error al registrar asistencia"}, status=HTTPStatus.BAD_REQUEST)

@@ -6,4 +6,5 @@ urlpatterns = [
     path('obtener-horario/<int:id>', ObtenerHorario.as_view()),
     path('nuevo-horario', CrearHorario.as_view()),
     path('desactivar-horario/<int:id>', DesactivarHorario.as_view()),
+    path('asignacion-empleados/<int:id>', AsignarSemana.as_view()),
 ]

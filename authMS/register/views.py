@@ -123,13 +123,13 @@ class Claselll(APIView):
 
     def post(self,request):
        
-        if request.data.get("email") == None or not request.data.get("email"):
+        if request.data.get("nombre") == None or not request.data.get("nombre"):
             return JsonResponse({"estado": "error", "msg":"El campo correo es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
         if request.data.get("password") == None or not request.data.get("password"):
             return JsonResponse({"estado": "error", "msg":"El campo contraseña es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
     
         try:
-            user = User.objects.filter(email=request.data["email"]).get()
+            user = User.objects.filter(username=request.data["nombre"]).get()
            
 
         except User.DoesNotExist:

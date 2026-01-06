@@ -1,6 +1,4 @@
 from django.shortcuts import render
-from django.shortcuts import render
-
 from rest_framework.views import APIView
 from django.http.response import JsonResponse
 from http import HTTPStatus
@@ -14,7 +12,9 @@ from jose import jwt
 
 from decorators.decorators import logueado
 from .models.horario_semana import*
+from .models.dia_horario import*
 from .serializers import*
+from helpers.asignaciones import asignar_empleado_a_dia
 
 #Swagger
 from drf_yasg.utils import swagger_auto_schema
@@ -58,11 +58,16 @@ class ObtenerHorario(APIView):
         try:
             
             data = HorarioSemanal.objects.filter(admin_id=resuelto["id"], id=id).get()
+            dias = data.dias.all()
+            datos_json= DiaHorarioSerializer(dias, many=True).data
+            print(datos_json)
             return JsonResponse({"data":{"id": data.id, "nombre":data.nombre,
                                             "fecha_inicio" :data.fecha_inicio,
                                             "fecha_fin":data.fecha_fin,
                                             "is_active":data.is_active, 
-                                            "admin_id":data.admin_id}}, 
+                                            "admin_id":data.admin_id,
+                                            "dias": datos_json
+                                         } }, 
                                     status=HTTPStatus.OK)
         except Exception as e:
             return JsonResponse({"estado":"error", "mensaje":"Recurso no disponible"}, status=HTTPStatus.NOT_FOUND)
@@ -94,12 +99,19 @@ class CrearHorario(APIView):
 
         try:
 
-            HorarioSemanal.objects.create(
+            horario = HorarioSemanal.objects.create(
                 nombre=nombre,
                 fecha_inicio=fecha_inicio,
                 fecha_fin=fecha_fin,
                 admin_id=resuelto["id"]
             )
+
+            for dia in range(1,7):
+                DiaHorario.objects.create(
+                    horario=horario,
+                    dia=dia
+                )
+
             return JsonResponse({"estado":"ok", "msg":"Horario creado"}, status=HTTPStatus.OK)
 
         except Exception as e:
@@ -127,7 +139,96 @@ class DesactivarHorario(APIView):
 
         try:
             HorarioSemanal.objects.filter(admin_id=resuelto["id"], id=id).update(
-                                        is_active=False,)
+                                        is_active=False)
             return JsonResponse({"estado":"ok", "msg":"Horario desactivado"}, status=HTTPStatus.OK)
         except Exception as e:
             return JsonResponse({"estado":"error", "msg":"Hubo un error al modificar el emplado"}, status=HTTPStatus.BAD_REQUEST)
+
+
+class AsignacioEmpleadoHorario(APIView):
+    @logueado()
+    def post(self, request, horario_id):
+
+        #Validacion de admin
+        header = request.headers.get('Authorization').split(" ")
+        resuelto=jwt.decode(header[1], os.getenv("SECRET_KEY"), algorithms=['HS512'] )
+
+        #Filtrar por horario ID y Active = True
+        if not HorarioSemanal.objects.filter(admin_id=resuelto["id"], id=horario_id, is_active=True).exists():
+            return JsonResponse({"estado":"error", "msg":"Recuerdo no encontrado u horario desactivado"}, 
+                                status=HTTPStatus.BAD_REQUEST)
+        
+        #Validar que el dia no tenga mas de dos Empleados Asociados
+
+        #Validar que no se repita el mismo empleado
+
+        try:
+            return
+        except Exception as e:
+            return
+        
+
+class AsignarSemana(APIView):
+    @logueado()
+
+    
+    def post(self, request, id):
+
+         #Validacion de admin
+        header = request.headers.get('Authorization').split(" ")
+        resuelto=jwt.decode(header[1], os.getenv("SECRET_KEY"), algorithms=['HS512'] )
+
+        admin_id = resuelto["id"]
+        asignaciones = request.data.get("asignaciones")
+
+        if not asignaciones:
+            return JsonResponse(
+                {"estado": "error", "msg": "No hay asignaciones"},
+                status=HTTPStatus.BAD_REQUEST
+            )
+
+        # 1. Horario válido
+        try:
+            horario = HorarioSemanal.objects.get(
+                id=id,
+                admin_id=admin_id,
+                is_active=True
+            )
+        except HorarioSemanal.DoesNotExist:
+            return JsonResponse(
+                {"estado": "error", "msg": "Horario no válido"},
+                HTTPStatus.BAD_REQUEST
+            )
+
+        # 2. Iterar días
+        for dia_num, empleados in asignaciones.items():
+
+            try:
+                dia = DiaHorario.objects.get(
+                    horario=horario,
+                    dia=int(dia_num)
+                )
+            except DiaHorario.DoesNotExist:
+                return JsonResponse(
+                    {"estado": "error", "msg": f"Día {dia_num} no válido"},
+                    status=400
+                )
+
+            # 3. Iterar empleados
+            for empleado_id in empleados:
+                error = asignar_empleado_a_dia(
+                    admin_id=admin_id,
+                    dia=dia,
+                    empleado_id=empleado_id
+                )
+
+                if error:
+                    return JsonResponse(
+                        {"estado": "error", "msg": error},
+                        status=400
+                    )
+
+        return JsonResponse(
+            {"estado": "ok", "msg": "Asignaciones creadas"},
+            status=201
+        )
