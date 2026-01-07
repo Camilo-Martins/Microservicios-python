@@ -22,7 +22,7 @@ from .services.registro_service import*
 
 # Create your views here.
 
-class Clasel(APIView):
+class RegistroUsuario(APIView):
 
     @swagger_auto_schema(
             operation_description="Endpoint registro",
@@ -38,9 +38,7 @@ class Clasel(APIView):
                     'password': openapi.Schema(type=openapi.TYPE_STRING, description="password")
                 },
                 required=['email', 'nombre', 'password']
-            )
-    )
-
+            ))
     def post(self, request):
         try:
             registro_admin(data=request.data)
@@ -52,30 +50,19 @@ class Clasel(APIView):
             return JsonResponse({"estado": "error", "msg": "Error interno"},status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-class Clasell(APIView):
-
+class ValidarCuenta(APIView):
     def post(selft, request, token):
-
-
-        #Confirmamos que exista el token
-        if token == None or not token:
-            return JsonResponse({"estado":"error", "msg":"La cuenta ya fue validada"}, status=Http404)
-
         try:
-            data= UserMetaData.objects.filter(token=token).filter(user__is_active=0).get()
-
-            UserMetaData.objects.filter(token=token).update(token="")
-
-            User.objects.filter(id=data.user_id).update(is_active=1)
-
+            verificar_cuenta(token=token)            
             return JsonResponse({"estado":"ok", "msg":"Cuenta verificada correctamente"}, status=HTTPStatus.OK)
         
-        except UserMetaData.DoesNotExist:
-            raise Http404
+        except  ValidationError as e:
+            return JsonResponse({"estado":"error", "msg": str(e)}, status=HTTPStatus.NOT_FOUND)
+        except Exception:
+            return JsonResponse({"estado": "error", "msg": "Error interno"},status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-class Claselll(APIView):
-
+class Login(APIView):
     @swagger_auto_schema(
         operation_description="Endpoint login",
         responses={
@@ -89,54 +76,21 @@ class Claselll(APIView):
                 'password': openapi.Schema(type=openapi.TYPE_STRING, description="password")
             },
             required=['email', 'password']
-        )
-    )
-
-
+    ))
     def post(self,request):
        
-        if request.data.get("nombre") == None or not request.data.get("nombre"):
-            return JsonResponse({"estado": "error", "msg":"El campo correo es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
-        if request.data.get("password") == None or not request.data.get("password"):
-            return JsonResponse({"estado": "error", "msg":"El campo contraseña es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
-    
         try:
-            user = User.objects.filter(username=request.data["nombre"]).get()
-           
+            token = login_usuario(data=request.data)
+            return JsonResponse({"token": token}, status=200)
 
-        except User.DoesNotExist:
-            return JsonResponse({"estado":"error", "mensaje": "Hubo un problema"}, status=HTTPStatus.BAD_REQUEST)
-
-     
-        auth = authenticate(request, username=user.username, password=request.data.get("password"))    
-        
-    
-        if auth is not None:
-          
-            fecha = datetime.now()
-            despues = fecha + timedelta(days=1)
-            fecha_numero = int(datetime.timestamp(despues))
-
-            payload={
-                "id": user.id,
-                "IIS": os.getenv("BASE_URL"),
-                "iat": int(time.time()),
-                "exp": int(fecha_numero)
-            }
-
-            try:
-                token = jwt.encode(payload, os.getenv("SECRET_KEY"), algorithm='HS512')
-                return JsonResponse({"id": user.id, "nombre": user.first_name, "token": token})
-
-            except Exception as e:
-                return JsonResponse({"estado":"error", "mensaje": "No es posible ingresar"}, status=404)
-        else:
-            return JsonResponse({"estado":"error", "mensaje": "Problemas al ingresar"}, status=404)
-        
+        except  ValidationError as e:
+            return JsonResponse({"estado":"error", "msg": str(e)}, status=HTTPStatus.BAD_REQUEST)
+        except Exception:
+            return JsonResponse({"estado": "error", "msg": "Error interno"},status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
-class ClaseIV(APIView):
 
+class RecuperarPassword(APIView):
     @swagger_auto_schema(
         operation_description="Endpoint recuperar contraseña",
         responses={
@@ -150,41 +104,19 @@ class ClaseIV(APIView):
             
             },
             required=['email']
-        )
-    )
-
-
+    ))
     def post(self,request):
             
-        if request.data.get("email") == None or not request.data.get("email"):
-            return JsonResponse({"estado": "error", "msg":"El campo correo es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
-        
-        token = uuid.uuid4()
-        url = os.getenv("BASE_URL")+"api/v1/auth/resetear-password/"+str(token)
-        print(url)
-
         try:
-            user = User.objects.filter(email=request.data["email"]).get()
-            UserMetaData.objects.filter(user_id=user.id).update(token=token)
-        
-
-            html=f"""
-                Hola {user.username}, para cambiar tu contraseña
-               <a href="{url}">aqui</a>
-                o copia y pega el siguiente enlace en tu navegador: {url}
-                """
-
-            utils.sendEmail(html, "Verificacion", request.data["email"])
-
-         
-
+            recuperar_password(request.data)
             return JsonResponse({"estado":"correo enviado", "mensaje": "OK"}, status=HTTPStatus.OK)
-        except Exception as e :
-            return JsonResponse({"estado":"error", "mensaje": "No es posible ingresar"}, status=HTTPStatus.BAD_REQUEST)
+        except  ValidationError as e:
+            return JsonResponse({"estado":"error", "msg": str(e)}, status=HTTPStatus.BAD_REQUEST)
+        except Exception:
+            return JsonResponse({"estado": "error", "msg": "Error interno"},status=HTTPStatus.INTERNAL_SERVER_ERROR)
         
 
-class ClaseV(APIView):
-
+class CambiarPassword(APIView):
     @swagger_auto_schema(
         operation_description="Endpoint cambiar contraseña",
         responses={
@@ -197,35 +129,14 @@ class ClaseV(APIView):
                 'password': openapi.Schema(type=openapi.TYPE_STRING, description="password")
             },
             required=['password']
-        )
-    )
-
-
+    ))
     def post(self,request,token):
-            
-        if request.data.get("password") == None or not request.data.get("password"):
-            return JsonResponse({"estado": "error", "msg":"Debe agregar una contraseña!"}, status=HTTPStatus.BAD_REQUEST)
-        
-        if token == None or not token:
-            return JsonResponse({"estado":"error", "msg":"La cuenta ya fue validada"}, status=Http404)
-
         try:
-            data = UserMetaData.objects.filter(token=token).get()
-
-            UserMetaData.objects.filter(token=token).update(token="")
-
-          
-            user = User.objects.filter(id=data.user_id)
-            user.set_password(request.data.get("password"))
-            user.save()
-
-            html=f"""
-                Hola {user.username}, tu contraseña ha sido actualizada
-             
-                """
-
-            utils.sendEmail(html, "Verificacion", user.email)
+            cambiar_password(request.data,token)
 
             return JsonResponse({"estado":"correo enviado", "mensaje": "OK"}, status=HTTPStatus.OK)
-        except Exception as e :
-            return JsonResponse({"estado":"error", "mensaje": "No es posible ingresar"}, status=HTTPStatus.BAD_REQUEST)
+        except  ValidationError as e:
+            return JsonResponse({"estado":"error", "msg": str(e)}, status=HTTPStatus.BAD_REQUEST)
+        except Exception:
+            return JsonResponse({"estado": "error", "msg": "Error interno"},status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        
