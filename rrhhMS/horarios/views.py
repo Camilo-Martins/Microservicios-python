@@ -60,13 +60,14 @@ class ObtenerHorario(APIView):
             data = HorarioSemanal.objects.filter(admin_id=resuelto["id"], id=id).get()
             dias = data.dias.all()
             datos_json= DiaHorarioSerializer(dias, many=True).data
-            print(datos_json)
+       
+
             return JsonResponse({"data":{"id": data.id, "nombre":data.nombre,
                                             "fecha_inicio" :data.fecha_inicio,
                                             "fecha_fin":data.fecha_fin,
                                             "is_active":data.is_active, 
                                             "admin_id":data.admin_id,
-                                            "dias": datos_json
+                                            "dias": datos_json,
                                          } }, 
                                     status=HTTPStatus.OK)
         except Exception as e:

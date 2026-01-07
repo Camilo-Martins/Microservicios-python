@@ -11,3 +11,14 @@ class EmpleadoSerializer(serializers.ModelSerializer):
         model = Empleado
         fields = ("id", "admin_id", "nombre_completo", "telefono", 
                   "rol", "is_active", "pago_diario", "created_at")
+        
+
+class AsistenciaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Asistencia
+        fields = ["id", "fecha", "asistio"]
+
+class PagoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pago
+        fields = ["id", "fecha", "monto"]
