@@ -17,6 +17,9 @@ from utils import utils
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
+
+from .services.registro_service import*
+
 # Create your views here.
 
 class Clasel(APIView):
@@ -39,45 +42,14 @@ class Clasel(APIView):
     )
 
     def post(self, request):
-
-        #Validaciones generales
-        if request.data.get("email") == None or not request.data.get("email"):
-            return JsonResponse({"estado": "error", "msg":"El campo correo es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
-        if request.data.get("nombre") == None or not request.data.get("nombre"):
-            return JsonResponse({"estado": "error", "msg":"El campo nombre es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
-        if request.data.get("password") == None or not request.data.get("password"):
-            return JsonResponse({"estado": "error", "msg":"El campo contraseña es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
-        
-        #Validación usuario unico
-        if User.objects.filter(email=request.data["email"]).exists():
-            return JsonResponse({"estado":"error", "msg":"El correo ya se encuentra registrado"}, status=HTTPStatus.BAD_REQUEST)
-        
-        token = uuid.uuid4()
-        url = os.getenv("BASE_URL")+"api/v1/auth/confirmar-cuenta/"+str(token)
-    
         try:
-           
-            u=User.objects.create_user(username=request.data["nombre"], 
-                                        password=request.data["password"], 
-                                        email=request.data["email"], 
-                                        first_name=request.data["nombre"], 
-                                        last_name="", 
-                                        is_active=0)
-            
-            UserMetaData.objects.create(token=token, user_id=u.id)
-            
-            html=f"""
-                    Hola {request.data["nombre"]}, para confirmar tu cuenta accede al siguiente enlace
-                    <a href="{url}">aqui</a>
-                    o copia y pega el siguiente enlace en tu navegador: {url}
-                    """
-
-            utils.sendEmail(html, "Verificacion", request.data["email"])
-
+            registro_admin(data=request.data)
             return JsonResponse({"estado":"ok", "msg":"Registro exitoso"}, status=HTTPStatus.OK)
         
-        except Exception as e:
-            return JsonResponse({"estado":"error", "msg": "Error."}, status=HTTPStatus.BAD_REQUEST)
+        except  ValidationError as e:
+            return JsonResponse({"estado":"error", "msg": str(e)}, status=HTTPStatus.NOT_FOUND)
+        except Exception:
+            return JsonResponse({"estado": "error", "msg": "Error interno"},status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
 class Clasell(APIView):
