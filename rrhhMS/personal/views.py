@@ -11,8 +11,6 @@ from drf_yasg import openapi
 #Locales
 from .utils.auth import get_admin_id_from_request
 from .services.empleado_service import*
-from .models.empleado import*
-from horarios.models import*
 from decorators.decorators import logueado
 from .serializers import*
 
@@ -33,6 +31,7 @@ class ObtenerEmpleados(APIView):
 
             datos_json= EmpleadoSerializer(empleados, many=True)
             return JsonResponse({"data":datos_json.data})
+        
         except Exception:
             return JsonResponse({"estado": "error", "msg": "Empleado no encontrado"}, status=400)
 
