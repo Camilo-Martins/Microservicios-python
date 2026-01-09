@@ -1,4 +1,4 @@
-# 🏪 Sistema de Gestión Operativa para Pequeños Comercios
+# 🏪 Sistema de Gestión de Personal y Productos para pequeñas y medianas empresas
 
 Proyecto de portafolio enfocado en el diseño y construcción de un **sistema backend realista**, pensado para la operación diaria de un **comercio pequeño (tienda de barrio)**.
 
@@ -91,11 +91,24 @@ Toda la configuración sensible se gestiona mediante un archivo `.env`.
 Ejemplo:
 
 ```env
-DB_HOST=
-DB_NAME=
-DB_USER=
-DB_PASSWORD=
-MYSQL_ROOT_PASSWORD=
+# AUTH SERVICE
+AUTH_DB_NAME=
+AUTH_DB_USER=
+AUTH_DB_PASSWORD=
+AUTH_DB_HOST=
+AUTH_DB_PORT=
+
+# RRHH SERVICE
+HR_DB_NAME=
+HR_DB_USER=
+HR_DB_PASSWORD=
+HR_DB_HOST=
+HR_DB_PORT=
+
+SMTP_SERVER=
+SMTP_PORT=
+SMTP_USER=
+SMTP_PASSWORD=
 ````
 
 El archivo `.env` **no se versiona**.
