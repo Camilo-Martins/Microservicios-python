@@ -23,6 +23,13 @@ El foco está en **simplicidad, realismo y mantenibilidad**.
 
 ---
 
+## 🎥 Video de presentación
+
+Visión general del proyecto, su arquitectura y estado actual:
+
+👉 [https://www.youtube.com/watch?v=XS9vVooYrnY](https://www.youtube.com/playlist?list=PLjwPn04e8qT_PSVP_yixD_r7RtRX6NHX_)
+
+
 ## 🧱 Arquitectura general
 
 El proyecto está dividido en **microservicios independientes**, cada uno con una responsabilidad clara:
@@ -184,6 +191,8 @@ Ejemplo de accesos:
 
 **Camilo**
 Ingeniero Informático
+
+- https://www.linkedin.com/in/camilo-martins-oliva/
 
 Interés en:
 
