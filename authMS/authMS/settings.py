@@ -63,10 +63,12 @@ CORS_ORIGIN_ALLOW_ALL =True
 CORS_ALLOW_CREDENTIALS =True
 CORS_ORIGIN_WHITELIST=[
     "http://localhost",
+    "http://localhost:5173",
     "http://localhost:8001"
 ]
 CORS_ORIGIN_REGEX_WHITELIST= [
     "http://localhost",
+    "http://localhost:5173",
     "http://localhost:8001"
 ]
 

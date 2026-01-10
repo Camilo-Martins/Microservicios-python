@@ -1,4 +1,4 @@
-# 🏪 Sistema de Gestión de Personal y Productos para pequeñas y medianas empresas
+# 🏪 Sistema de Gestión de Personal y Productos para pequeñas y medianas tiendas
 
 Proyecto de portafolio enfocado en el diseño y construcción de un **sistema backend realista**, pensado para la operación diaria de un **comercio pequeño (tienda de barrio)**.
 
