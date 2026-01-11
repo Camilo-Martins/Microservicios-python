@@ -4,8 +4,13 @@ export const registroSchema = yup.object({
     nombre: yup
         .string()
         .required('El campo nombre es obligatorio')
-        .min(10, 'Ingrese nombre válido')
+        .min(4, 'Ingrese nombre válido')
         .max(20, 'Ingrese nombre válido'),
+       nombre_tienda: yup
+        .string()
+        .required('El campo nombre tienda es obligatorio')
+        .min(6, 'Ingrese nombre tienda válido')
+        .max(20, 'Ingrese nombre tienda  válido'),
     email: yup
         .string()
         .required('El campo email es obligatorio')

@@ -15,16 +15,18 @@ class RegistroUsuario(APIView):
             operation_description="Endpoint registro",
             responses={
                 200:"Success",
-                400:"Bad Request"
+                409:"Conflict",
+                500: "Internal Server Error"
             },
             request_body=openapi.Schema(
                 type=openapi.TYPE_OBJECT,
                 properties={
                     'email': openapi.Schema(type=openapi.TYPE_STRING, description="email"),
                     'nombre': openapi.Schema(type=openapi.TYPE_STRING, description="nombre"),
+                    'nombre_tienda': openapi.Schema(type=openapi.TYPE_STRING, description="nombre de la tienda a registrar"),
                     'password': openapi.Schema(type=openapi.TYPE_STRING, description="password")
                 },
-                required=['email', 'nombre', 'password']
+                required=['email', 'nombre','nombre_tienda', 'password']
             ))
     def post(self, request):
         
@@ -33,13 +35,20 @@ class RegistroUsuario(APIView):
             return JsonResponse({"estado":"ok", "msg":"Registro exitoso"}, status=HTTPStatus.OK)
         
         except  ValidationError as e:
-            return JsonResponse({"estado":"error", "msg": str(e)}, status=HTTPStatus.NOT_FOUND)
+            return JsonResponse({"estado":"error", "msg": str(e)}, status=HTTPStatus.BAD_REQUEST)
         
         except Exception:
             return JsonResponse({"estado": "error", "msg": "Error interno"},status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
 class ValidarCuenta(APIView):
+    @swagger_auto_schema(
+    operation_description="Endpoint registro",
+    responses={
+        200:"Success",
+        409:"Conflict",
+        500: "Internal Server Error"
+    },)
     def post(selft, request, token):
 
         try:
@@ -47,7 +56,7 @@ class ValidarCuenta(APIView):
             return JsonResponse({"estado":"ok", "msg":"Cuenta verificada correctamente"}, status=HTTPStatus.OK)
         
         except  ValidationError as e:
-            return JsonResponse({"estado":"error", "msg": str(e)}, status=HTTPStatus.NOT_FOUND)
+            return JsonResponse({"estado":"error", "msg": str(e)}, status=HTTPStatus.BAD_REQUEST)
         
         except Exception:
             return JsonResponse({"estado": "error", "msg": "Error interno"},status=HTTPStatus.INTERNAL_SERVER_ERROR)
@@ -70,8 +79,8 @@ class Login(APIView):
     ))
     def post(self,request):       
         try:
-            token = login_usuario(data=request.data)
-            return JsonResponse({"token": token}, status=200)
+            result = login_usuario(data=request.data)
+            return JsonResponse({"token": result}, status=200)
 
         except  ValidationError as e:
             return JsonResponse({"estado":"error", "msg": str(e)}, status=HTTPStatus.BAD_REQUEST)

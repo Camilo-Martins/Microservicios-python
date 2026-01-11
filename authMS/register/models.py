@@ -1,12 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
+from autoslug import AutoSlugField
 
 # Create your models here.
 
 class UserMetaData(models.Model):
     user  = models.ForeignKey(User, models.DO_NOTHING)
     token = models.CharField(max_length=100, blank=True, null=True)
-
+    nombre_tienda = models.CharField(max_length=100, blank=True, null=True)
+    slug = AutoSlugField(populate_from='nombre_tienda', null=True)
 
     def __str__(self):
         return f"{self.first_user}"

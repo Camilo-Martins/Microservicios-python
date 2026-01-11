@@ -6,7 +6,8 @@ import LoginView from '@/features/public/views/LoginView.vue'
 import Register from '@/features/public/views/Register.vue'
 import ResetPasswordView from '@/features/public/views/ResetPasswordView.vue'
 import NewPasswordView from '@/features/public/views/NewPasswordView.vue'
-
+import ConfirmAccount from '@/features/public/views/ConfirmAccount.vue'
+import Error404 from '@/features/public/views/Error404.vue'
 
 
 const router = createRouter({
@@ -26,17 +27,27 @@ const router = createRouter({
           name: 'register',
           component: Register,
         },
+             {
+          path: '/confirmar-cuenta/:token',
+          name: 'confirmar-cuenta',
+          component: ConfirmAccount,
+        },
             {
           path: '/reset-password',
           name: 'reset-password',
           component: ResetPasswordView,
         },
           {
-          path: '/change-password',
+          path: '/change-password/:token',
           name: '/change-password',
-          component: ResetPasswordView,
+          component: NewPasswordView,
         },
       ],
+    },
+     {
+      path: '/:pathMatch(.*)*',
+      name: 'pagina-no-encontrada',
+      component: Error404,
     },
   ],
 })

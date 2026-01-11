@@ -10,13 +10,14 @@ import time
 from jose import jwt
 
 from ..models import *
-from ..utils import send_email, get_token
+from ..utils import send_email, get_token, regex
 
 
 REQUIRED_FIELDS = [
     "nombre",
     "email",
     "password",
+    "nombre_tienda"
 ]
 
 def registro_admin(data):
@@ -25,12 +26,31 @@ def registro_admin(data):
         if not data.get(field):
             raise ValidationError(f"El campo {field} es obligatorio")
         
+    if not regex.STORE_NAME_REGEX.match(data["nombre"]):
+         raise ValidationError("Nombre")
+
+
+    if not regex.STORE_NAME_REGEX.match(data["nombre_tienda"]):
+         raise ValidationError("Nombre de tienda no disponble")
+
     #Validación usuario unico
     if User.objects.filter(email=data["email"]).exists():
         raise ValidationError("Correo ya registrado")
     
+    if User.objects.filter(username=data["nombre"]).exists():
+        raise ValidationError("Correo ya registrado")
+
+    if UserMetaData.objects.filter(nombre_tienda=data["nombre_tienda"]).exists():
+        raise ValidationError("Tienda ya registrada")
+
+    
+
+
     token = uuid.uuid4()
     url = os.getenv("BASE_URL")+"api/v1/auth/confirmar-cuenta/"+str(token)
+
+
+    tienda =data["nombre_tienda"].lower()
 
     u=User.objects.create_user(username=data["nombre"], 
                                 password=data["password"], 
@@ -39,7 +59,7 @@ def registro_admin(data):
                                 last_name="", 
                                 is_active=0)
             
-    UserMetaData.objects.create(token=token, user_id=u.id)
+    UserMetaData.objects.create(token=token, user_id=u.id, nombre_tienda=tienda)
 
     html=f"""
             Hola {data["nombre"]}, para confirmar tu cuenta accede al siguiente enlace
@@ -66,8 +86,14 @@ def login_usuario(data):
         if not data.get(field):
             raise ValidationError(f"El campo {field} es obligatorio")
 
+    if not regex.STORE_NAME_REGEX.match(data["email"]):
+         raise ValidationError("Correo no disponible")
+
     user = User.objects.get(email=data["email"])
     
+    user_meta = UserMetaData.objects.filter(user_id=user.id).first()
+
+
     if not user:
         raise ValidationError("Credenciales inválidas")
 
@@ -89,8 +115,13 @@ def login_usuario(data):
     }
 
     token = get_token.generateToken(payload)
+    nombre = ""
+    nombre_tienda = ""
 
-    return token
+    return  {"id":user.id, 
+            "token":token, 
+            "nombre":user.first_name, 
+            "nombre_tienda":user_meta.nombre_tienda}
 
 
 def recuperar_password(data):

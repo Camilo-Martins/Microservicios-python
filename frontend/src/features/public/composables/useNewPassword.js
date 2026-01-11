@@ -1,23 +1,26 @@
-// composables/useRegister.ts
 import { ref, readonly } from 'vue'
-import { register } from '../services/registerService'
+import { newPassword } from '../services/newPasswordService'
 
-export function useRegister() {
+
+export function useNewPassword() {
   const data = ref(null)
   const loading = ref(false)
   const error = ref(null)
+  const success = ref(false)
 
-  const sendData = async (body) => {
+  const sendData = async (token, body) => {
     loading.value = true
     error.value = null
+      success.value = false
 
     try {
-      data.value = await register(body)
+      data.value = await newPassword(token, body)
+       success.value = true
     } catch (e) {
           if (e?.data?.message) {
         error.value = e.data.message
       } else{
-         error.value = 'No se pudo completar el registro'
+         error.value = 'Hubo un problema al confirmar la cuenta'
       }
       throw e
     } finally {
@@ -30,5 +33,6 @@ export function useRegister() {
     data: readonly(data),
     loading: readonly(loading),
     error: readonly(error),
+      success: readonly(success),
   }
 }
