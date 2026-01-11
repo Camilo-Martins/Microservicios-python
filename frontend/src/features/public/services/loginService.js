@@ -1,0 +1,23 @@
+// services/registerService.ts
+export async function login(body) {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}auth/login`,
+    {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    }
+  );
+
+   const data = await response.json()
+   console.log(data)
+
+  if (!response.ok) {
+     throw {
+      status: response.status,
+      data,
+    }
+  }
+
+  return data;
+}

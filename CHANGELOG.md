@@ -20,3 +20,16 @@
 
 - Sanitización de errores backend
 - Protección de rutas públicas inexistentes
+
+---
+
+## [0.2.0] - Módulo público v1 [Finalizado]
+
+### Añadido
+
+- Inicio de Sesión (JWT)
+- Estructura base de módulo privado (panel protegido)
+
+### Seguridad
+
+- Protección de rutas privadas mediante JWT

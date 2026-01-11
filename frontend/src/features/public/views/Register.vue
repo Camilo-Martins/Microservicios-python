@@ -1,14 +1,11 @@
 <script setup>
 import { Form, Field, ErrorMessage } from 'vee-validate';
-import { reactive } from 'vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import BaseInput from '@/components/BaseInput.vue'
 import BaseButton from '@/components/BaseButton.vue';
 import { useRegister } from '../composables/useRegister';
 import { registroSchema } from '../schemas/validacionesSchemas';
-
 
 let nombre = ref('');
 let nombre_tienda = ref('');
