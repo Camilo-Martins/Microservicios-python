@@ -54,9 +54,10 @@ const submit = async () => {
 
 
         <div class="form-field">
-          <ErrorMessage name="email" class="error-text" />
+         
           <label class="form.label">Email</label>
-          <Field type="text" name="email" class="form-input" v-model="email" placeholder="Ej: Camilo Álvarez" />
+          <Field type="text" name="email" class="form-input" v-model="email" placeholder="Guaripolo@gmail.com" />
+           <ErrorMessage name="email" class="error-text" />
         </div>
 
 

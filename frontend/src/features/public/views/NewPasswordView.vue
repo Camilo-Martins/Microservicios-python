@@ -57,9 +57,10 @@ const submit = async () => {
         </p>
 
         <div class="form-field">
-          <ErrorMessage name="email" class="error-text" />
+         
           <label class="form.label">Password</label>
           <Field type="password" name="password" class="form-input" v-model="password" placeholder="Ej: *******" />
+           <ErrorMessage name="password" class="error-text" />
         </div>
 
 

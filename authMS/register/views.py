@@ -67,7 +67,8 @@ class Login(APIView):
         operation_description="Endpoint login",
         responses={
             200:"Success",
-            400:"Bad Request"
+            409:"Conflict",
+            500: "Internal Server Error"
         },
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -95,7 +96,8 @@ class RecuperarPassword(APIView):
         operation_description="Endpoint recuperar contraseña",
         responses={
             200:"Success",
-            400:"Bad Request"
+            409:"Conflict",
+            500: "Internal Server Error"
         },
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -123,7 +125,8 @@ class CambiarPassword(APIView):
         operation_description="Endpoint cambiar contraseña",
         responses={
             200:"Success",
-            400:"Bad Request"
+            409:"Conflict",
+            500: "Internal Server Error"
         },
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,

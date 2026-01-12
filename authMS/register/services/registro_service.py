@@ -47,7 +47,7 @@ def registro_admin(data):
 
 
     token = uuid.uuid4()
-    url = os.getenv("BASE_URL")+"api/v1/auth/confirmar-cuenta/"+str(token)
+    url = os.getenv("BASE_URL_FRONTEND")+"confirmar-cuenta/"+str(token)
 
 
     tienda =data["nombre_tienda"].lower()
@@ -85,9 +85,6 @@ def login_usuario(data):
     for field in ["email", "password"]:
         if not data.get(field):
             raise ValidationError(f"El campo {field} es obligatorio")
-
-    if not regex.STORE_NAME_REGEX.match(data["email"]):
-         raise ValidationError("Correo no disponible")
 
     user = User.objects.get(email=data["email"])
     
@@ -129,7 +126,7 @@ def recuperar_password(data):
         raise ValidationError("Ingrese correo")
         
     token = uuid.uuid4()
-    url = os.getenv("BASE_URL")+"api/v1/auth/cambiar-password/"+str(token)
+    url = os.getenv("BASE_URL_FRONTEND")+"change-password/"+str(token)
 
     user = User.objects.filter(email=data["email"]).get()
     if not user:

@@ -57,31 +57,33 @@ const submit = async () => {
         </p>
 
         <div class="form-field">
-          <ErrorMessage name="nombre" class="error-text" />
+         
           <label class="form.label">Nombre completo</label>
           <Field type="text" name="nombre" class="form-input" v-model="nombre" placeholder="Ej: Camilo Álvarez" />
+           <ErrorMessage name="nombre" class="text-red-700 font-bold uppercase" />
         </div>
 
 
         <div class="form-field">
-          <ErrorMessage name="nombre_tienda" class="error-text" />
+         
           <label class="form.label">Nombre Tienda</label>
-          <Field type="text" name="nombre_tienda" class="form-input" v-model="nombre_tienda"
-            placeholder="Ej: Pepito Store" />
+          <Field type="text" name="nombre_tienda" class="form-input" v-model="nombre_tienda"placeholder="Ej: Pepito Store" />
+          <ErrorMessage name="nombre_tienda" class="text-red-700 font-bold uppercase" />
         </div>
 
 
         <div class="form-field">
-          <ErrorMessage name="email" class="error-text" />
+         
           <label class="form.label">Email</label>
           <Field type="text" name="email" class="form-input" v-model="email" placeholder="Ej: Camilo Álvarez" />
+           <ErrorMessage name="email" class="text-red-700 font-bold uppercase" />
         </div>
 
         <div class="form-field">
-          <ErrorMessage name="password" class="error-text" />
+       
           <label class="form.label">Contraseña</label>
-          <Field type="password" name="password" class="form-input" v-model="password"
-            placeholder="Ej: Camilo Álvarez" />
+          <Field type="password" name="password" class="form-input" v-model="password" placeholder="Ej: Camilo Álvarez" />
+             <ErrorMessage name="password" class="text-red-700 font-bold uppercase" />
         </div>
 
 

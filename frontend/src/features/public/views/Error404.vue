@@ -35,8 +35,6 @@ onMounted(async () => {
         <h1 class="justify-center text-center font-bold uppercase text-2xl">Página no encontrada</h1>
         <h2 class="justify-center text-center ">En unos segundos será redirigido al inicio de sesión</h2>
       </div>
-
-
     </div>
   </div>
 </template>

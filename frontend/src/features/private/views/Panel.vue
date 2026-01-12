@@ -15,10 +15,6 @@
         border border-gray-200
       ">
 
-
-     
-
-   
     </div>
   </div>
 </template>
