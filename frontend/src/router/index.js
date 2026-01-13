@@ -12,6 +12,7 @@ import Panel from '@/features/private/views/Panel.vue'
 import { useAuthStore } from '@/stores/authStore'
 import PrivateLayout from '@/features/private/components/PrivateLayout.vue'
 import PersonalView from '@/features/hr/views/PersonalView.vue'
+import PersonaView from '@/features/hr/views/PersonaView.vue'
 
 
 
@@ -71,10 +72,16 @@ const router = createRouter({
           component: Panel,
 
         },
-           {
+        {
           path: '/panel/personal',
           name: 'personal',
           component: PersonalView,
+
+        },
+        {
+          path: '/panel/persona/:id',
+          name: 'persona',
+          component: PersonaView,
 
         },
       ]
