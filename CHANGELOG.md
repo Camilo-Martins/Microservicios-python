@@ -33,3 +33,22 @@
 ### Seguridad
 
 - Protección de rutas privadas mediante JWT
+
+---
+
+## [0.3.0] - Módulo privado v1 [Personal]
+
+### Añadido
+
+- Creación de personal
+- Visualización de personal mediante tabla interactiva
+- Editar Personal
+
+### Cambiado
+
+- Ahora el módulo publico retralimenta al usuario con mensajes mas claros
+- Se corrigieron los nombre de algunas vistas en el módulo publico. Ahora los nombres son acordes al funcionamiento de la vista
+
+### Seguridad
+
+- Se agregaron validaciones de seguridad en las vistas publicas

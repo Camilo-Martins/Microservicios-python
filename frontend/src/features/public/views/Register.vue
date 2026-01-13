@@ -11,6 +11,7 @@ let nombre = ref('');
 let nombre_tienda = ref('');
 let email = ref('');
 let password = ref('')
+let succes = false
 const router = useRouter();
 
 const { sendData, loading, error } = useRegister()
@@ -19,9 +20,10 @@ const submit = async () => {
   await sendData({ nombre: nombre.value, nombre_tienda: nombre_tienda.value, email: email.value, password: password.value })
 
   if (loading.value == false) {
+    succes = true
     setTimeout(() => {
       router.push('/login')
-    }, 1000)
+    }, 3000)
   }
 
 }
@@ -55,35 +57,42 @@ const submit = async () => {
         <p v-if="error" class="rounded-md bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-700">
           {{ error }}
         </p>
+        <p v-if="succes"
+          class="rounded-md bg-green-50 border border-green-200 px-3 py-2 text-sm text-green-800 text-center font-bold uppercase">
+          Cuenta registrada exitosamente
+        </p>
+
 
         <div class="form-field">
-         
+
           <label class="form.label">Nombre completo</label>
           <Field type="text" name="nombre" class="form-input" v-model="nombre" placeholder="Ej: Camilo Álvarez" />
-           <ErrorMessage name="nombre" class="text-red-700 font-bold uppercase" />
+          <ErrorMessage name="nombre" class="text-red-700 font-bold uppercase" />
         </div>
 
 
         <div class="form-field">
-         
+
           <label class="form.label">Nombre Tienda</label>
-          <Field type="text" name="nombre_tienda" class="form-input" v-model="nombre_tienda"placeholder="Ej: Pepito Store" />
+          <Field type="text" name="nombre_tienda" class="form-input" v-model="nombre_tienda"
+            placeholder="Ej: Pepito Store" />
           <ErrorMessage name="nombre_tienda" class="text-red-700 font-bold uppercase" />
         </div>
 
 
         <div class="form-field">
-         
+
           <label class="form.label">Email</label>
           <Field type="text" name="email" class="form-input" v-model="email" placeholder="Ej: Camilo Álvarez" />
-           <ErrorMessage name="email" class="text-red-700 font-bold uppercase" />
+          <ErrorMessage name="email" class="text-red-700 font-bold uppercase" />
         </div>
 
         <div class="form-field">
-       
+
           <label class="form.label">Contraseña</label>
-          <Field type="password" name="password" class="form-input" v-model="password" placeholder="Ej: Camilo Álvarez" />
-             <ErrorMessage name="password" class="text-red-700 font-bold uppercase" />
+          <Field type="password" name="password" class="form-input" v-model="password"
+            placeholder="Ej: Camilo Álvarez" />
+          <ErrorMessage name="password" class="text-red-700 font-bold uppercase" />
         </div>
 
 

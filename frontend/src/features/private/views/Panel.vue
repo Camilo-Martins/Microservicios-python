@@ -14,7 +14,7 @@
         space-y-6
         border border-gray-200
       ">
-
+      <h1 class="text-center font-bold uppercase text-xl">Estamos trabajando para usted</h1>
     </div>
   </div>
 </template>

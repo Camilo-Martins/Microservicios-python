@@ -2,6 +2,7 @@
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { loginSchema } from '../schemas/validacionesSchemas';
 
 import BaseButton from '@/components/BaseButton.vue';
 import { useLogin } from '../composables/useLogin';
@@ -10,6 +11,7 @@ import { useAuthStore } from '@/stores/authStore';
 const router = useRouter();
 const { sendData, loading, error } = useLogin()
 
+let succes = false
 let store = useAuthStore();
 let password = ref('');
 let email = ref('');
@@ -19,6 +21,7 @@ const submit = async () => {
   await sendData({email: email.value, password: password.value })
 
   if (loading.value == false) {
+    succes = true;
     setTimeout(() => {
       router.push('/panel')
     }, 1000)
@@ -49,11 +52,15 @@ const submit = async () => {
       </div>
 
         <!-- Form -->
-      <Form  @submit="submit()" class="space-y-4">
+      <Form :validation-schema="loginSchema" @submit="submit()" class="space-y-4">
         <p v-if="error" class="rounded-md bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-700">
           {{ error }}
         </p>
 
+           <p v-if="succes"
+          class="rounded-md bg-green-50 border border-green-200 px-3 py-2 text-sm text-green-800 text-center font-bold uppercase">
+          Contraseña actualizada con exito
+        </p>
         <div class="form-field">
         
           <label class="form.label">Email</label>
@@ -71,7 +78,7 @@ const submit = async () => {
 
 
         <BaseButton label="Registrarse" type="submit">
-          Register
+        Ingesar
         </BaseButton>
       </Form>
 

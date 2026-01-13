@@ -11,6 +11,7 @@ import Error404 from '@/features/public/views/Error404.vue'
 import Panel from '@/features/private/views/Panel.vue'
 import { useAuthStore } from '@/stores/authStore'
 import PrivateLayout from '@/features/private/components/PrivateLayout.vue'
+import PersonalView from '@/features/hr/views/PersonalView.vue'
 
 
 
@@ -68,6 +69,12 @@ const router = createRouter({
           path: '/panel',
           name: 'panel',
           component: Panel,
+
+        },
+           {
+          path: '/panel/personal',
+          name: 'personal',
+          component: PersonalView,
 
         },
       ]

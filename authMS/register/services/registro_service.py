@@ -27,11 +27,16 @@ def registro_admin(data):
             raise ValidationError(f"El campo {field} es obligatorio")
         
     if not regex.STORE_NAME_REGEX.match(data["nombre"]):
-         raise ValidationError("Nombre")
-
+         raise ValidationError("Nombre no disponible")
 
     if not regex.STORE_NAME_REGEX.match(data["nombre_tienda"]):
          raise ValidationError("Nombre de tienda no disponble")
+
+    if not regex.EMAIL_REGEX.match(data["email"]):
+         raise ValidationError("Email no disponible")
+
+    if not regex.PASSWORD_REGEX.match(data["password"]):
+         raise ValidationError("Ingrese contraseña válida")
 
     #Validación usuario unico
     if User.objects.filter(email=data["email"]).exists():
@@ -42,9 +47,6 @@ def registro_admin(data):
 
     if UserMetaData.objects.filter(nombre_tienda=data["nombre_tienda"]).exists():
         raise ValidationError("Tienda ya registrada")
-
-    
-
 
     token = uuid.uuid4()
     url = os.getenv("BASE_URL_FRONTEND")+"confirmar-cuenta/"+str(token)
@@ -86,10 +88,15 @@ def login_usuario(data):
         if not data.get(field):
             raise ValidationError(f"El campo {field} es obligatorio")
 
+    if not regex.EMAIL_REGEX.match(data["email"]):
+         raise ValidationError("Error de credenciales")
+
+    if not regex.PASSWORD_REGEX.match(data["password"]):
+         raise ValidationError("Error de credencriales")
+
     user = User.objects.get(email=data["email"])
     
     user_meta = UserMetaData.objects.filter(user_id=user.id).first()
-
 
     if not user:
         raise ValidationError("Credenciales inválidas")
@@ -112,8 +119,6 @@ def login_usuario(data):
     }
 
     token = get_token.generateToken(payload)
-    nombre = ""
-    nombre_tienda = ""
 
     return  {"id":user.id, 
             "token":token, 
@@ -124,7 +129,10 @@ def login_usuario(data):
 def recuperar_password(data):
     if data["email"] == None or not data["email"]:
         raise ValidationError("Ingrese correo")
-        
+    
+    if not regex.EMAIL_REGEX.match(data["email"]):
+         raise ValidationError("Revise el email ingresado")
+
     token = uuid.uuid4()
     url = os.getenv("BASE_URL_FRONTEND")+"change-password/"+str(token)
 
@@ -149,6 +157,10 @@ def cambiar_password(data, token):
 
     if not token:
         raise ValidationError("Token inválido o expirado")
+
+    if not regex.PASSWORD_REGEX.match(data["password"]):
+         raise ValidationError("Ingrese contraseña segura") 
+
 
     meta = get_object_or_404(UserMetaData, token=token)
 

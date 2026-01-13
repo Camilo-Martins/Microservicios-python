@@ -19,7 +19,7 @@ export function useResetPassword() {
           if (e?.data?.message) {
         error.value = e.data.message
       } else{
-         error.value = 'Hubo un problema al confirmar la cuenta'
+         error.value = 'Hubo un problema al enviar correo'
       }
       throw e
     } finally {

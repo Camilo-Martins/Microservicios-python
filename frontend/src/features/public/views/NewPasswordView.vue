@@ -2,10 +2,13 @@
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { registroSchema } from '../schemas/validacionesSchemas';
+
 import { useNewPassword } from '../composables/useNewPassword';
 import BaseButton from '@/components/BaseButton.vue';
 
 let password = ref('')
+let succes = false;
 const route = useRoute();
 const router = useRouter();
 const token = route.params.token;
@@ -14,14 +17,13 @@ const token = route.params.token;
 const { sendData, loading, error, success } = useNewPassword()
 
 const submit = async () => {
-  console.log(password.value)
+
   await sendData(token, { password: password.value })
-
-
   if (loading.value == false) {
+    succes = true;
     setTimeout(() => {
       router.push('/login')
-    }, 1000)
+    }, 3000)
   }
 
 }
@@ -46,23 +48,26 @@ const submit = async () => {
           Recupera tu contraseña
         </h1>
         <p class="text-sm text-gray-500">
-          Y recupera tu información
+          Accede a tu información
         </p>
       </div>
 
       <!-- Form -->
-      <Form @submit="submit()" class="space-y-4">
+      <Form :validation-schema="registroSchema" @submit="submit()" class="space-y-4">
         <p v-if="error" class="rounded-md bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-700">
           {{ error }}
         </p>
+        <p v-if="succes"
+          class="rounded-md bg-green-50 border border-green-200 px-3 py-2 text-sm text-green-800 text-center font-bold uppercase">
+          Contraseña actualizada con exito
+        </p>
 
         <div class="form-field">
-         
-          <label class="form.label">Password</label>
-          <Field type="password" name="password" class="form-input" v-model="password" placeholder="Ej: *******" />
-           <ErrorMessage name="password" class="error-text" />
-        </div>
 
+          <label class="form.label">Password</label>
+          <Field type="password" name="password" class="form-input" v-model="password" placeholder="*******" />
+          <ErrorMessage name="password" class="text-red-700 font-bold uppercase" />
+        </div>
 
         <BaseButton label="CambiarPass" type="submit">
           Cambiar clave
