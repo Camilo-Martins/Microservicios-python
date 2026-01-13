@@ -44,7 +44,7 @@ schema_view=get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/rrhh/empleados/', include('personal.urls')),
+    path('api/v1/personal/', include('personal.urls')),
     path('api/v1/rrhh/horarios/', include('horarios.urls')),
 
      #rutas swagger

@@ -1,6 +1,7 @@
 <script setup>
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import { ref } from 'vue';
+import { useAddPersonal } from '../composables/useAddPersonal';
 
 import BaseButton from '@/components/BaseButton.vue';
 
@@ -11,8 +12,10 @@ const roles = [
     { label: 'Reponedor', value: 'reponedor' },
 ]
 
-
-const medios_pago = [{ label: 'Transferencia', value: 'Transferencia' }, { label: 'Efectivo', value: 'Efectivo' }]
+const medios_pago = [
+    { label: 'Transferencia', value: 'Transferencia' }, 
+    { label: 'Efectivo', value: 'Efectivo' }
+]
 
 let rol = ref('');
 let nombre_completo = ref('');
@@ -20,6 +23,19 @@ let telefono = ref('');
 let medio_pago = ref('');
 let pago_diario = ref('');
 let rut = ref('');
+
+
+const { sendData, loading, error } = useAddPersonal()
+
+const submit = async () => {
+    await sendData({nombre_completo:nombre_completo.value, telefono:telefono.value, rut:rut.value, rol:rol.value, pago_diario:pago_diario.value, medio_pago:medio_pago.value})
+  
+    //await sendData({ nombre: nombre.value, nombre_tienda: nombre_tienda.value, email: email.value, password: password.value })
+
+ 
+
+}
+
 
 </script>
 
@@ -35,7 +51,7 @@ let rut = ref('');
 
         <!-- Formulario -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-8">
-            <Form class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
+            <Form   @submit="submit()" class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
 
 
                 <div class="form-field">
@@ -90,8 +106,8 @@ let rut = ref('');
                     <div class="py-3">
                         <label class="form.label">Monto Pago</label>
                     </div>
-                    <Field type="password" name="pago_diario" class="form-input" v-model="pago_diario"
-                        placeholder="Ej: Camilo Álvarez" />
+                    <Field type="text" name="pago_diario" class="form-input" v-model="pago_diario"
+                        placeholder="Ej: $20.000" />
 
                 </div>
 

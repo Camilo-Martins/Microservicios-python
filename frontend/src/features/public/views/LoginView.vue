@@ -21,9 +21,9 @@ const submit = async () => {
   await sendData({email: email.value, password: password.value })
 
   if (loading.value == false) {
-    succes = true;
+   router.push('/panel')
     setTimeout(() => {
-      router.push('/panel')
+     
     }, 1000)
   }
 
@@ -57,10 +57,7 @@ const submit = async () => {
           {{ error }}
         </p>
 
-           <p v-if="succes"
-          class="rounded-md bg-green-50 border border-green-200 px-3 py-2 text-sm text-green-800 text-center font-bold uppercase">
-          Contraseña actualizada con exito
-        </p>
+        
         <div class="form-field">
         
           <label class="form.label">Email</label>
