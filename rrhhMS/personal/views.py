@@ -100,7 +100,7 @@ class RegistroEmpleado(APIView):
             )
 
         except Exception as e:
-              return JsonResponse({"estado": "error", "msg": "No fue posible crear emplado"}, status=400)
+              return JsonResponse({"estado": "error", "msg":str(e)}, status=400)
         
         except Exception:
             return JsonResponse({"estado": "error", "msg": "Error interno"},status=500)

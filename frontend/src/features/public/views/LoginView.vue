@@ -2,30 +2,31 @@
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { loginSchema } from '../schemas/validacionesSchemas';
 
+
+import { loginSchema } from '../schemas/validacionesSchemas';
+import useToast from '@/stores/useToast';
 import BaseButton from '@/components/BaseButton.vue';
 import { useLogin } from '../composables/useLogin';
-import { useAuthStore } from '@/stores/authStore';
+
 
 const router = useRouter();
 const { sendData, loading, error } = useLogin()
 
-let succes = false
-let store = useAuthStore();
+const { trigger } = useToast()
 let password = ref('');
 let email = ref('');
 
 const submit = async () => {
-  console.log({email: email.value, password: password.value })
-  await sendData({email: email.value, password: password.value })
+  try {
+    await sendData({email: email.value, password: password.value })
+    router.push('/panel')
+  } catch (error) {
 
-  if (loading.value == false) {
-   router.push('/panel')
-    setTimeout(() => {
-     
-    }, 1000)
+     trigger(error.data.msg)
   }
+ 
+ 
 
 }
 </script>
@@ -52,17 +53,15 @@ const submit = async () => {
       </div>
 
         <!-- Form -->
-      <Form :validation-schema="loginSchema" @submit="submit()" class="space-y-4">
-        <p v-if="error" class="rounded-md bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-700">
-          {{ error }}
-        </p>
+      <Form  @submit="submit()" class="space-y-4">
+    
 
         
         <div class="form-field">
         
           <label class="form.label">Email</label>
           <Field type="text" name="email" class="form-input" v-model="email" placeholder="Ej: Camilo Álvarez" />
-            <ErrorMessage name="email" class="text-red-700 font-bold uppercase" />
+        
         </div>
 
         <div class="form-field">
@@ -70,7 +69,7 @@ const submit = async () => {
           <label class="form.label">Contraseña</label>
           <Field type="password" name="password" class="form-input" v-model="password"
             placeholder="***********" />
-             <ErrorMessage name="password" class="text-red-700 font-bold uppercase" />
+           
         </div>
 
 

@@ -6,17 +6,21 @@ import TablePersonal from '../components/TablePersonal.vue';
 import { useDeletePersonal } from '../composables/useDeletePersonal';
 import AddPersonal from '../components/AddPersonal.vue';
 import { personalSchema } from '@/features/private/schemas/personalSchema';
+import { useGetPersona } from '../composables/useGetPersona';
 
 const { sendData: getPersonal, data: dataPersonal, loading: loadingPersonal, error: errorPersonal } = useObtenerPersonal()
 const { sendData: sendPersonal, data: deletedPersonal , loading: loadingDeleted, error: errorDeleted } = useDeletePersonal()
+const { sendData: getPersona, data: dataPersona , loading: loadingPersona, error: errorPersona } = useGetPersona()
+
 const selectedId = ref(null)
 
 let personalList = ref([]);
 
 const fetchEmployees = async () => {
+    console.log("!")
     await getPersonal();
-     personalList.value = dataPersonal.value
-}
+    personalList.value = dataPersonal.value
+};
 
 onMounted(() => {
     fetchEmployees();
@@ -25,9 +29,11 @@ onMounted(() => {
 const toggleEmployeeStatus = async (id) => {
     await sendPersonal(id)
     await  fetchEmployees();
-}
+};
 
-
+const toPersona = async (id) => {
+    await getPersona(id)
+};
 
 </script>
 
@@ -46,7 +52,7 @@ const toggleEmployeeStatus = async (id) => {
       <TablePersonal
         :items="personalList"
         :selected-id="selectedId"
-       
+        @persona-data="toPersona"
          @toggle-status="toggleEmployeeStatus"
       />
 

@@ -53,7 +53,7 @@ const submit = async () => {
       </div>
 
       <!-- Form -->
-      <Form :validation-schema="registroSchema" @submit="submit()" class="space-y-4">
+      <Form  @submit="submit()" class="space-y-4">
         <p v-if="error" class="rounded-md bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-700">
           {{ error }}
         </p>

@@ -1,20 +1,18 @@
 <script setup>
+const props = defineProps({
+  personal: {
+    type: Object,
+    required: true
+  }
+})
+
 import { Form, Field, ErrorMessage} from 'vee-validate';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useAddPersonal } from '../composables/useAddPersonal';
-
-
 
 import BaseButton from '@/components/BaseButton.vue';
 import { personalSchema } from '@/features/private/schemas/personalSchema';
-import useToast from '@/stores/useToast';
-
-const { trigger } = useToast()
-
 const { sendData, loading, error } = useAddPersonal()
-
-
-const formRef = ref(null)
 
 const roles = [
     { label: 'Vendedor', value: 'Vendedor' },
@@ -28,32 +26,51 @@ const medios_pago = [
     { label: 'Efectivo', value: 'Efectivo' }
 ];
 
-let rol = ref('');
-let nombre_completo = ref('');
-let telefono = ref('');
-let medio_pago = ref('');
-let pago_diario = ref('');
-let rut = ref('');
-
+const form = ref({
+  nombre_completo: '',
+  rut: '',
+  rol: '',
+  telefono: '',
+  pago_diario: '',
+  medio_pago: ''
+})
 const emit = defineEmits(['created'])
+
+
+watch(
+  () => props.personal,
+  (personal) => {
+    if (!personal){
+        console.log("No hay props")
+        return
+    } 
+
+    
+    form.value = {
+      nombre_completo: personal.empleado?.nombre_completo,
+      rut: personal.empleado?.rut,
+      rol: personal.empleado?.rol,
+      telefono: personal.empleado?.telefono,
+      pago_diario: personal.empleado?.pago_diario,
+      medio_pago: personal.empleado?.medio_pago
+    }
+  },
+  { immediate: true }
+)
+
 
 
 
 const submit = async () => {
-    
-  try {
-      await sendData(
+    await sendData(
         {
             nombre_completo: nombre_completo.value, telefono: telefono.value,
             rut: rut.value, rol: rol.value, pago_diario: pago_diario.value,
             medio_pago: medio_pago.value
         })
 
-
+    
     emit('created');
-  } catch (error) {
-     trigger(error.data.msg)
-  }
    
 
 
@@ -64,8 +81,10 @@ const submit = async () => {
 
     <!-- Formulario -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-8">
-        <Form    @submit="submit()"
-            class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
+        <form  
+          
+         @submit.prevent="submit"
+            class="grid grid-cols-1 md:grid-cols-1 gap-4 items-end">
 
 
             <div class="form-field">
@@ -73,7 +92,7 @@ const submit = async () => {
                     <label class="form.label">Nombre</label>:
                 </div>
 
-                <Field type="text" name="nombre_completo" class="form-input" v-model="nombre_completo"
+                <Field type="text" name="nombre_completo" class="form-input" v-model="form.nombre_completo"
                     placeholder="Ej: Camilo Álvarez" />
 
 
@@ -85,7 +104,7 @@ const submit = async () => {
                  
                 </div>
 
-                <Field type="text" name="rut" class="form-input" v-model="rut" placeholder="Ej:12345678-9" />
+                <Field type="text" name="rut" class="form-input" v-model="form.rut" placeholder="Ej:12345678-9" />
 
             </div>
 
@@ -95,7 +114,7 @@ const submit = async () => {
                 </div>
 
 
-                <select v-model="rol" class="form-input">
+                <select v-model="form.rol" class="form-input">
                     <option value="" disabled>Seleccionar</option>
 
                     <option v-for="rol in roles" :key="rol.value" :value="rol.value">
@@ -111,7 +130,7 @@ const submit = async () => {
                 
                 </div>
 
-                <Field type="text" name="telefono" class="form-input" v-model="telefono" placeholder="56912345678" />
+                <Field type="text" name="telefono" class="form-input" v-model="form.telefono" placeholder="56912345678" />
 
             </div>
 
@@ -120,7 +139,7 @@ const submit = async () => {
                 <div class="py-3">
                     <label class="form.label">Monto Pago</label>
                 </div>
-                <Field type="text" name="pago_diario" class="form-input" v-model="pago_diario"
+                <Field type="text" name="pago_diario" class="form-input" v-model="form.pago_diario"
                     placeholder="Ej: $20.000" />
 
             </div>
@@ -130,7 +149,7 @@ const submit = async () => {
                     <label class="form.label">Medio Pago</label>
                 </div>
 
-                <select v-model="medio_pago" class="form-input">
+                <select v-model="form.medio_pago" class="form-input">
                     <option value="" disabled>Seleccionar</option>
 
                     <option v-for="mp in medios_pago" :key="mp.value" :value="mp.value">
@@ -140,11 +159,11 @@ const submit = async () => {
 
             </div>
 
-            <BaseButton label="Agregar Personal" type="submit">
-                Agregar
+            <BaseButton label="Editar" type="submit">
+                Editar
             </BaseButton>
 
-        </Form>
+        </form>
     </div>
 
 </template>

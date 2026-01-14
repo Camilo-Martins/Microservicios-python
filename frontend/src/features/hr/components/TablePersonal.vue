@@ -10,7 +10,8 @@ defineProps({
   }
 })
 
-const emit = defineEmits(['toggle-status', 'select'])
+const emit = defineEmits(['toggle-status', 'select','persona-data'])
+
 </script>
 
 <template>
@@ -54,7 +55,9 @@ const emit = defineEmits(['toggle-status', 'select'])
                 </td>
                 <td class="px-4 py-3">
 
-                    <a :href="`/panel/persona/${persona.id}`" class="text-blue-600 hover:underline font-medium">
+                    <a 
+                    @click="emit('personta-data', persona.id)"
+                    :href="`/panel/persona/${persona.id}`" class="text-blue-600 hover:underline font-medium">
                         VER
                     </a>
                 </td>
