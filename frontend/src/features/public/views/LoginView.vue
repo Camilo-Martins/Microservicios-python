@@ -23,7 +23,7 @@ const submit = async () => {
     router.push('/panel')
   } catch (error) {
 
-     trigger(error.data.msg)
+     trigger("Error!")
   }
  
  

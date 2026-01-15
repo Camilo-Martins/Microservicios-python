@@ -52,3 +52,66 @@ class RegisterStoreSerializer(serializers.Serializer):
         except DjangoValidationError as e:
             raise serializers.ValidationError(e.messages)
         return value    
+
+
+class ConfirmAccountSerializer(serializers.Serializer):
+
+    token = serializers.CharField()
+
+    def validate_token(self,value):
+
+        if value == None or not value:
+            raise serializers.ValidationError("Error al activar cuenta")
+
+        if not UserStore.objects.filter(token=value).exists():
+            raise serializers.ValidationError("Error al activar cuenta")
+
+        return value
+    
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+
+    def validate_email(self,value):
+        if value == None or not value:
+            raise serializers.ValidationError("Ingrese correo")
+        
+        return value
+    
+    def validate_password(self,value):
+        if value == None or not value:
+            raise serializers.ValidationError("Ingrese contraseña")
+    
+        return value
+    
+class ResetPassSerielizer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self,value):
+        if value == None or not value:
+            raise serializers.ValidationError("Ingrese correo")
+        
+        return value
+     
+
+class NewPassSerielizer(serializers.Serializer):
+    password = serializers.CharField(write_only=True)
+    token = serializers.CharField()
+
+    def validate_token(self,value):
+
+        if value == None or not value:
+            raise serializers.ValidationError("Token expirado")
+
+        if not UserStore.objects.filter(token=value).exists():
+            raise serializers.ValidationError("Token expirado")
+
+        return value
+
+    def validate_password(self,value):
+        if value == None or not value:
+            raise serializers.ValidationError("Ingrese contraseña")
+        
+        return value

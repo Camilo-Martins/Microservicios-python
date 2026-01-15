@@ -15,9 +15,12 @@ export function useLogin() {
 
     try {
       data.value = await login(body)
+     
       store.iniciarSesion(data.value.token)
     } catch (e) {
+      console.log(e)
           if (e?.data?.message) {
+            
         error.value = e.data.message
       } else{
          error.value = 'No se pudo iniciar sesión'
