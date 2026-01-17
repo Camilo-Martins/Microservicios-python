@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ValidationError
 from datetime import timedelta
-
+from django.db import transaction
 from ..models import*
 from horarios.models import*
 
@@ -14,85 +14,97 @@ REQUIRED_FIELDS = [
 ]
 
 # services/empleado_service.py
-def obtener_empleados_por_admin(admin_id):
-  
-    return Empleado.objects.filter(admin_id=admin_id).order_by("id")
+
    
-
-def obtener_empleado(admin_id,id):
-   
-    empleado = get_object_or_404(
-        Empleado,
-        admin_id=admin_id,
-        id=id
-    )
-
-    asistencias = Asistencia.objects.filter(empleado=empleado)
-    pagos = Pago.objects.filter(empleado=empleado)
-
-    return empleado, asistencias, pagos
-
-
-def crear_empleado(admin_id, data):
-
-    for field in REQUIRED_FIELDS:
-        if not data.get(field):
-            raise ValidationError(f"El campo {field} es obligatorio")
-
-    if Empleado.objects.filter(telefono=data["telefono"]).exists():
-        raise ValidationError("Teléfono ya registrado")
-
-    if Empleado.objects.filter(rut=data["rut"]).exists():
-        raise ValidationError("RUT ya registrado")
-
-    return Empleado.objects.create(
-        nombre_completo=data["nombre_completo"],
-        telefono=data["telefono"],
-        rol=data["rol"],
-        pago_diario=data["pago_diario"],
-        rut=data["rut"],
-        medio_pago=data.get("medio_pago"),
-        is_active=True,
-        admin_id=admin_id
-    )
-
-def desactivar_empleado(admin_id,id):
-    empleado = get_object_or_404(
-    Empleado,
-        admin_id=admin_id,
-        id=id
-    )
-
-    empleado.is_active = not empleado.is_active
-    empleado.save(update_fields=["is_active"])
-
-    return empleado.is_active
-
-
-def editar_empleado(admin_id, id, data):
+class PersonalService:
+    @staticmethod
+    @transaction.atomic
+    def obtener_empleado(*, admin_id, id):
     
-    #Validar que el empleado solo sea editable por el admin
-    Empleado.objects.filter(admin_id=admin_id, id=id).get()
-    
-    for field in REQUIRED_FIELDS:
-        if not data.get(field):
-            raise ValidationError(f"El campo {field} es obligatorio")
+        empleado = get_object_or_404(
+            Empleado,
+            admin_id=admin_id,
+            id=id
+        )
+
+        asistencias = Asistencia.objects.filter(empleado=empleado)
+        pagos = Pago.objects.filter(empleado=empleado)
+
+        return empleado, asistencias, pagos
+
+class NewPersonalService:
+    @staticmethod
+    @transaction.atomic
+    def crear_empleado(*,admin_id, nombre_completo, telefono, rol, rut, pago_diario, medio_pago):
+
+        if not pago_diario or pago_diario == None:
+            pago_diario = 0
+
+        personal = Empleado.objects.create(
+            nombre_completo=nombre_completo,
+            telefono=telefono,
+            rol=rol,
+            pago_diario=pago_diario,
+            rut=rut,
+            medio_pago=medio_pago,
+            is_active=True,
+            admin_id=admin_id
+        )
+
+        return personal
+
+
+class SetPerfilService:
+    staticmethod
+    @transaction.atomic
+    def desactivar_empleado(*, admin_id, id):
         
-    if Empleado.objects.filter(telefono=data["telefono"]).exclude(id=id).exists():
-        raise ValidationError("Teléfono ya registrado")
+        empleado = get_object_or_404(
+        Empleado,
+            admin_id=admin_id,
+            id=id
+        )
 
-    if Empleado.objects.filter(rut=data["rut"]).exclude(id=id).exists():
-        raise ValidationError("RUT ya registrado")
+        empleado.is_active = not empleado.is_active
+        empleado.save(update_fields=["is_active"])
 
-    Empleado.objects.filter(admin_id=admin_id, id=id).update(
-        nombre_completo=data["nombre_completo"],
-        telefono=data["telefono"],
-        rol=data["rol"],
-        pago_diario=data["pago_diario"],
-        rut=data["rut"],
-        medio_pago=data.get("medio_pago"),
-        admin_id=admin_id
-    )
+        return empleado.is_active
+
+class PersonalListService:
+    staticmethod
+    @transaction.atomic
+    def obtener_empleados_por_admin(*, admin_id):
+        
+        personalList = Empleado.objects.filter(admin_id=admin_id).order_by("id")
+        return personalList
+  
+
+
+class EditPersonalService:
+    @staticmethod
+    @transaction.atomic
+    def editar_empleado(*, admin_id, id, nombre_completo, telefono, rol, pago_diario, rut, medio_pago):
+    
+        empleado = get_object_or_404(
+            Empleado,
+            admin_id=admin_id,
+            id=id
+        )
+    
+        if not pago_diario or pago_diario == None:
+            pago_diario = 0
+
+        empleado.nombre_completo=nombre_completo
+        empleado.telefono=telefono
+        empleado.rol=rol
+        empleado.pago_diario=pago_diario
+        empleado.rut=rut
+        empleado.medio_pago=medio_pago
+        empleado.admin_id=admin_id
+        empleado.save(update_fields=["nombre_completo", "telefono", "rol", "pago_diario", "rut", "medio_pago"])
+
+        return empleado
+
 
 
 def asistencia_empleado(admin_id, id, data):
@@ -144,3 +156,4 @@ def pago_empleado(admin_id, id, data):
             pagado = data["pagado"],
             monto = data["monto"],
             fecha = fecha_pago)
+

@@ -5,7 +5,6 @@ import { useObtenerPersonal } from '../composables/useObtenerPersonal';
 import TablePersonal from '../components/TablePersonal.vue';
 import { useDeletePersonal } from '../composables/useDeletePersonal';
 import AddPersonal from '../components/AddPersonal.vue';
-import { personalSchema } from '@/features/private/schemas/personalSchema';
 import { useGetPersona } from '../composables/useGetPersona';
 
 const { sendData: getPersonal, data: dataPersonal, loading: loadingPersonal, error: errorPersonal } = useObtenerPersonal()

@@ -6,16 +6,17 @@ class Empleado(models.Model):
     nombre_completo = models.CharField(max_length=100)
     telefono = models.CharField(max_length=20, blank=True, null=True)
 
-    rol = models.CharField(max_length=100, blank=True, null=True)
+    rol = models.CharField(max_length=100, default="Seleccionar")
    
     is_active = models.BooleanField(default=True)
     
     pago_diario = models.IntegerField(
-        help_text="Monto acordado por día trabajado"
+        help_text="Monto acordado por día trabajado",
+        default=0
     )
 
     rut = models.CharField(max_length=12, blank=True, null=True, default=999999)
-    medio_pago = models.CharField(max_length=20, blank=True, null=True, default="Seleccione")
+    medio_pago = models.CharField(max_length=20, default="Seleccionar")
 
     created_at = models.DateTimeField(
         auto_now_add=True,

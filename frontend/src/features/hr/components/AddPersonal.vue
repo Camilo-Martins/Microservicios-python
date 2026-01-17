@@ -52,7 +52,7 @@ const submit = async () => {
 
     emit('created');
   } catch (error) {
-     trigger(error.data.msg)
+     trigger("Nombre, Rut y Telefono son Obligatorios.")
   }
    
 

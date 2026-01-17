@@ -23,6 +23,7 @@ const emit = defineEmits(['toggle-status', 'select','persona-data'])
                 <th class="px-4 py-3 ">Nombre</th>
                 <th class="px-4 py-3 ">Rut</th>
                 <th class="px-4 py-3 ">Rol</th>
+                 <th class="px-4 py-3 ">Medio Pago</th>
                 <th class="px-4 py-3 ">Remuneración ($)</th>
                 <th class="px-4 py-3 ">Estado</th>
                 <th class="px-4 py-3 ">Contacto</th>
@@ -34,6 +35,7 @@ const emit = defineEmits(['toggle-status', 'select','persona-data'])
                 <td class="px-4 py-3"> {{ persona.nombre_completo }}</td>
                 <td class="px-4 py-3">{{ persona.rut }}</td>
                 <td class="px-4 py-3">{{ persona.rol }}</td>
+                 <td class="px-4 py-3">{{ persona.medio_pago }}</td>
                 <td class="px-4 py-3">{{ persona.pago_diario }}</td>
                 <td class="px-4 py-3">
                   <button

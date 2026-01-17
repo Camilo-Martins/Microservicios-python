@@ -27,13 +27,19 @@ class ObtenerEmpleados(APIView):
 
         try:
             admin_id = get_admin_id_from_request(request)
-            empleados = obtener_empleados_por_admin(admin_id)
-
-            datos_json= EmpleadoSerializer(empleados, many=True)
-            return JsonResponse({"data":datos_json.data})
-        
         except Exception:
-            return JsonResponse({"estado": "error", "msg": "Empleado no encontrado"}, status=400)
+            return JsonResponse({"estado": "error", "msg": "Ha ocurrido un error"}, status=500)
+
+        serializer = GetPersonalListSerializer(data={"admin_id":admin_id})
+        serializer.is_valid(raise_exception=True)
+
+        personalList = PersonalListService.obtener_empleados_por_admin(
+            **serializer.validated_data
+        )
+
+        datos_json = EmpleadoSerializer(personalList, many=True)
+
+        return JsonResponse({"data": datos_json.data})
 
 
 class ObtenerEmpleado(APIView):
@@ -47,21 +53,27 @@ class ObtenerEmpleado(APIView):
 
         try: 
             admin_id = get_admin_id_from_request(request)
-
-            empleado, asistencias, pagos = obtener_empleado(admin_id, id)
-
-            data = {
-                "empleado": EmpleadoSerializer(empleado).data,
-                "asistencias": AsistenciaSerializer(asistencias, many=True).data,
-                "pagos": PagoSerializer(pagos, many=True).data,
-            }
-
-            return JsonResponse(data, status=200)
-        except Http404:
-            return JsonResponse({"estado": "error", "msg": "Empleado no encontrado"}, status=400)
-
         except Exception:
             return JsonResponse({"estado": "error", "msg": "Error interno del servidor"},status=500)
+        
+        
+        serializer = GetPersonalSerializer(data={"admin_id":admin_id, "id":id})
+        serializer.is_valid(raise_exception=True)
+
+        empleado, asistencias, pagos = PersonalService.obtener_empleado(
+            admin_id=admin_id,
+            id=id
+        )
+
+        data = {
+            "empleado": EmpleadoSerializer(empleado).data,
+            "asistencias": AsistenciaSerializer(asistencias, many=True).data,
+            "pagos": PagoSerializer(pagos, many=True).data,
+        }
+        
+        return JsonResponse(data)
+      
+       
         
 class RegistroEmpleado(APIView):
     @logueado()
@@ -88,22 +100,21 @@ class RegistroEmpleado(APIView):
     
         try:
             admin_id = get_admin_id_from_request(request)
+        except Exception:
+            return JsonResponse({"estado": "error", "msg": "Error interno"},status=500)
+        
+        serializer = NewPersonalSerializer(admin_id, request.data)
+        serializer.is_valid(raise_exception=True)
 
-            crear_empleado(
-                admin_id= admin_id,
-                data=request.data
-            )
+        NewPersonalService.crear_empleado(
+            admin_id=admin_id,
+            **serializer.validated_data
+        )
 
-            return JsonResponse(
+        return JsonResponse(
                 {"estado": "ok", "msg": "Registro exitoso"},
                 status=201
             )
-
-        except Exception as e:
-              return JsonResponse({"estado": "error", "msg":str(e)}, status=400)
-        
-        except Exception:
-            return JsonResponse({"estado": "error", "msg": "Error interno"},status=500)
 
 
 class DesactivarEmpleado(APIView):
@@ -116,22 +127,22 @@ class DesactivarEmpleado(APIView):
             },
     )
     def patch(self, request, id):
-
-        admin_id = get_admin_id_from_request(request)
-
+        
         try:
-            nuevo_estado = desactivar_empleado(admin_id, id)
-            msg = "Empleado activado" if nuevo_estado else "Empleado desactivado"
-
-            return JsonResponse( {"estado": "ok", "msg": msg},status=200)
-
-        except Http404:
-            return JsonResponse({"estado": "error", "msg": "Empleado no encontrado"},status=404)
-
+            admin_id = get_admin_id_from_request(request)
         except Exception:
             return JsonResponse({"estado": "error", "msg": "Error interno"},status=500)
+       
+        serializer = SetPersonalSerializer(data={"admin_id":admin_id, "id":id})
+        serializer.is_valid(raise_exception=True)
+    
+        SetPerfilService.desactivar_empleado(
+            **serializer.validated_data
+        )
 
+        return JsonResponse( {"estado": "ok", "msg": "Estado actualizado"},status=200)
 
+        
 class EditarEmpleado(APIView):
     @logueado()
     @swagger_auto_schema(
@@ -153,20 +164,30 @@ class EditarEmpleado(APIView):
             )
     )
     def put(self, request, id):
-
-        admin_id = get_admin_id_from_request(request)
-
         try:
-            editar_empleado(
-                admin_id= admin_id,
-                id=id,
-                data=request.data
-            )
-            return JsonResponse({"estado":"ok", "msg":"Empleado actualizado"}, status=HTTPStatus.OK)
-        except  ValidationError as e:
-            return JsonResponse({"estado":"error", "msg": str(e)}, status=HTTPStatus.NOT_FOUND)
+            admin_id = get_admin_id_from_request(request)
         except Exception:
             return JsonResponse({"estado": "error", "msg": "Error interno"},status=HTTPStatus.INTERNAL_SERVER_ERROR)
+       
+
+        serializer = EditPersonalSerializer(
+            data=request.data,
+            context={
+                "admin_id": admin_id,
+                "id": id
+            }
+        )
+        serializer.is_valid(raise_exception=True)
+        
+        
+        EditPersonalService.editar_empleado(
+            admin_id=admin_id,
+            id=id,
+            **serializer.validated_data
+        )
+
+        return JsonResponse( {"estado": "ok", "msg": "Estado actualizado"},status=200)
+      
         
 
 class AsistenciaEmpleado(APIView):
