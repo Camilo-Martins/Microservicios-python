@@ -79,6 +79,15 @@ class PersonalListService:
         return personalList
   
 
+class PersonalActiveListService:
+    staticmethod
+    @transaction.atomic
+    def obtener_empleados_por_admin(*, admin_id):
+        
+        personalList = Empleado.objects.filter(admin_id=admin_id, is_active=True ).order_by("id")
+        return personalList
+  
+
 
 class EditPersonalService:
     @staticmethod

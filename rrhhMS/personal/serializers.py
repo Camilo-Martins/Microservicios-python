@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import*
 from dotenv import load_dotenv
 import os
-from django.core.exceptions import ValidationError as DjangoValidationError
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
 class EmpleadoSerializer(serializers.ModelSerializer):
@@ -82,7 +82,7 @@ class SetPersonalSerializer(serializers.Serializer):
 
     def validate_admin_id(self, value):
         if not Empleado.objects.filter(admin_id=value).exists():
-            raise serializers.ValidationError("No tienes eres admin")
+            raise serializers.ValidationError("No tienes los permisos")
         return value
 
 
@@ -103,6 +103,19 @@ class GetPersonalListSerializer(serializers.Serializer):
         if not Empleado.objects.filter(admin_id=value).exists():
             raise serializers.ValidationError("No tienes eres admin")
         return value
+
+
+class PersonalActiveSerializer(serializers.Serializer):
+    admin_id = serializers.CharField(
+        required=True,
+        allow_blank=False,
+    )
+    id = serializers.CharField(required=False, allow_blank=True)
+    rol = serializers.CharField(required=False, allow_blank=True)
+    nombre_completo = serializers.CharField(required=False, allow_blank=True)
+    class Meta:
+        model = Empleado
+        fields = ["id", "nombre_completo", "rol", "admin_id"]
 
 
 class GetPersonalSerializer(serializers.Serializer):

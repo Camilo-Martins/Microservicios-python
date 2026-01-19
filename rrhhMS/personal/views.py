@@ -42,6 +42,32 @@ class ObtenerEmpleados(APIView):
         return JsonResponse({"data": datos_json.data})
 
 
+class ObtenerEmpleadosActivos(APIView):
+    @logueado()
+    @swagger_auto_schema(
+            operation_description="Endpoint Obtener Empleados",
+            responses={
+                200:"Success",
+                400:"Bad Request"},)
+    def get(self, request):
+
+        try:
+            admin_id = get_admin_id_from_request(request)
+        except Exception:
+            return JsonResponse({"estado": "error", "msg": "Ha ocurrido un error"}, status=500)
+
+        serializer = PersonalActiveSerializer(data={"admin_id":admin_id, })
+        serializer.is_valid(raise_exception=True)
+
+        personalList = PersonalActiveListService.obtener_empleados_por_admin(
+            **serializer.validated_data
+        )
+
+        datos_json = PersonalActiveSerializer(personalList, many=True)
+
+        return JsonResponse({"data": datos_json.data})
+
+
 class ObtenerEmpleado(APIView):
     @logueado()
     @swagger_auto_schema(

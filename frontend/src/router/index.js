@@ -13,8 +13,7 @@ import { useAuthStore } from '@/stores/authStore'
 import PrivateLayout from '@/features/private/components/PrivateLayout.vue'
 import PersonalView from '@/features/hr/views/PersonalView.vue'
 import PersonaView from '@/features/hr/views/PersonaView.vue'
-
-
+import HorarioView from '@/features/hr/views/HorarioView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -63,28 +62,30 @@ const router = createRouter({
       path: '/panel',
       component: PrivateLayout,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
       },
       children: [
         {
           path: '/panel',
           name: 'panel',
           component: Panel,
-
         },
         {
           path: '/panel/personal',
           name: 'personal',
           component: PersonalView,
-
         },
         {
           path: '/panel/persona/:id',
           name: 'persona',
           component: PersonaView,
-
         },
-      ]
+        {
+          path: '/panel/horario',
+          name: 'horario',
+          component: HorarioView,
+        },
+      ],
     },
 
     {
@@ -96,19 +97,19 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('user_token');
+  const token = localStorage.getItem('user_token')
 
   // Usuario logeado intentando entrar a página pública
   if (token && to.meta.guestOnly) {
-    return next('/panel');
+    return next('/panel')
   }
 
   // Usuario NO logeado intentando entrar a ruta protegida
   if (!token && to.meta.requiresAuth) {
-    return next('/');
+    return next('/')
   }
 
-  next();
-});
+  next()
+})
 
 export default router

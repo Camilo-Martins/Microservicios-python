@@ -1,7 +1,12 @@
 from rest_framework import serializers
 from .models import*
+from datetime import timedelta, date
 from dotenv import load_dotenv
 from personal.serializers import*
+from django.utils.formats import date_format
+from django.core.exceptions import ValidationError
+from .utils import horario_utils
+
 import os
 
 class EmpleadoMiniSerializer(serializers.ModelSerializer):
@@ -30,3 +35,28 @@ class HorarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = HorarioSemanal
         fields = ("id", "admin_id", "nombre" , "is_active", "fecha_inicio", "fecha_fin", "dias")
+
+
+class CreateHorarioSerializer(serializers.Serializer):
+    admin_id = serializers.CharField(
+        required=True,
+        allow_blank=False,
+    )
+ 
+    def validate_admin_id(self, value):
+        if not HorarioSemanal.objects.filter(admid_id=value).exists():
+            raise serializers.ValidationError("No tienes los permisos.")
+        return value
+    
+
+class CreateHorarioSerializer(serializers.Serializer):
+    admin_id = serializers.CharField(
+        required=True,
+        allow_blank=False,
+    )
+ 
+class GetHorarioSerializer(serializers.Serializer):
+    admin_id = serializers.CharField(
+        required=True,
+        allow_blank=False,
+    )

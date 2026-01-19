@@ -16,7 +16,6 @@ const selectedId = ref(null)
 let personalList = ref([]);
 
 const fetchEmployees = async () => {
-    console.log("!")
     await getPersonal();
     personalList.value = dataPersonal.value
 };

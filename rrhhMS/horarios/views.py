@@ -56,21 +56,26 @@ class ObtenerHorario(APIView):
                 400:"Bad Request"
             },
     )
-    def get(self, request,id):
+    def get(self, request):
         try:
             admin_id = get_admin_id_from_request(request)
-
-            horario, dias = obtener_horario_por_admin(admin_id,id)
-
-
-            data = {
-                "horario" : HorarioSerializer(horario).data,
-                 "dias" : DiaHorarioSerializer(dias, many=True).data,
-            }
-
-            return JsonResponse(data,status=HTTPStatus.OK)
         except Exception as e:
             return JsonResponse({"estado":"error", "mensaje":"Recurso no disponible"}, status=HTTPStatus.NOT_FOUND)
+
+
+        serializer = GetHorarioSerializer(data={"admin_id":admin_id})
+        serializer.is_valid(raise_exception=True)
+
+        horario, dias = GetHorarioService.obtener_horario(
+            admin_id=admin_id
+        )
+
+        data = {
+            "horario" : HorarioSerializer(horario).data,
+        }
+
+        return JsonResponse(data,status=HTTPStatus.OK)
+       
 
 class CrearHorario(APIView):
     @logueado()
@@ -82,18 +87,24 @@ class CrearHorario(APIView):
             },
     )
     def post(self, request):
-
-        admin_id = get_admin_id_from_request(request)
-      
-        try:
-            crear_horario(admin_id, request.data)
-            return JsonResponse({"estado":"ok", "msg":"Horario creado"}, status=HTTPStatus.OK)
-
-        except  ValidationError as e:
-            return JsonResponse({"estado":"error", "msg": str(e)}, status=HTTPStatus.NOT_FOUND)
         
+        try:
+            admin_id = get_admin_id_from_request(request)
         except Exception:
             return JsonResponse({"estado": "error", "msg": "Error interno"},status=HTTPStatus.INTERNAL_SERVER_ERROR)
+       
+        serializer = CreateHorarioSerializer(data={"admin_id":admin_id})
+        serializer.is_valid(raise_exception=True)
+
+        data = CreateHorarioService.crear_horario(
+            admin_id=admin_id
+        )
+        
+        return JsonResponse(
+                {"estado": "ok", "msg": "Horario Creado"},
+                status=201
+            )
+
 
 class DesactivarHorario(APIView):
     @logueado()

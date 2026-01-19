@@ -33,7 +33,7 @@ const isActive = (name) => route.name === name
           Personal
         </RouterLink>
 
-        <RouterLink to="/panel/horarios" class="nav-link px-5 hover:bg-white/20 transition px-3 py-1 rounded-md"
+        <RouterLink to="/panel/horario" class="nav-link px-5 hover:bg-white/20 transition px-3 py-1 rounded-md"
           :class="{ 'nav-active': isActive('horarios') }">
           Horarios
         </RouterLink>
