@@ -60,3 +60,20 @@ class GetHorarioSerializer(serializers.Serializer):
         required=True,
         allow_blank=False,
     )
+
+
+class AsignarDiaSerializer(serializers.Serializer):
+    admin_id = serializers.IntegerField( required=False,  )
+    empleado_id = serializers.IntegerField(  required=False, )
+    dia_id = serializers.IntegerField( required=False,   )
+    horario_id = serializers.IntegerField(  required=False,  )
+
+    def validate_asignacion(self,value):
+        empleado = self.context.get("empleado_id")
+        dia = self.context.get("dia_id")
+        asignacion = AsignacionDia.objects.filter(empleado=empleado,dia=dia).exists()
+        if asignacion:
+            raise serializers.ValidationError("El Personal ya se encuentra asignado.")
+
+        print(asignacion)
+        return value

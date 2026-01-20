@@ -51,6 +51,35 @@ class GetHorarioService:
 
         return horario, dias
 
+
+
+
+class AsignarPersonalService:      
+    @staticmethod
+    @transaction.atomic  
+    def asignar_semana(admin_id, horario_id, dia_id, empleado_id):
+      
+
+        empleado = get_object_or_404(
+            Empleado,
+            id=empleado_id,
+            admin_id=admin_id
+        )
+
+    
+        dia = get_object_or_404(
+            DiaHorario,
+            horario=horario_id,
+            dia=int(dia_id)
+        )
+
+        asignacion = AsignacionDia.objects.create(
+            dia=dia,
+            empleado=empleado
+        )
+
+        return asignacion
+
 def desactivar_horario(admin_id, id):
 
     horario = get_object_or_404(
@@ -61,34 +90,3 @@ def desactivar_horario(admin_id, id):
 
     horario.is_active=True
     horario.save()
-
-        
-def asignar_semana(admin_id, id, data):
-    asignaciones = data.get("asignaciones")
-
-    if not asignaciones or not isinstance(asignaciones, dict):
-        raise ValidationError("Ingrese asignaciones válidas")
-
-    horario = get_object_or_404(
-        HorarioSemanal,
-        id=id,
-        admin_id=admin_id,
-        is_active=True
-    )
-
-    for dia_num, empleados in asignaciones.items():
-        dia = get_object_or_404(
-            DiaHorario,
-            horario=horario,
-            dia=int(dia_num)
-        )
-
-        if not isinstance(empleados, list):
-            raise ValidationError("Formato de empleados inválido")
-
-        for empleado_id in empleados:
-            asignar_empleado_a_dia(
-                admin_id=admin_id,
-                dia=dia,
-                empleado_id=int(empleado_id)
-            )

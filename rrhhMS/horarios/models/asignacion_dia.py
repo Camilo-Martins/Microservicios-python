@@ -11,7 +11,7 @@ class AsignacionDia(models.Model):
 
     empleado = models.ForeignKey(
         Empleado,
-        on_delete=models.PROTECT
+        on_delete=models.CASCADE
     )
 
     class Meta:

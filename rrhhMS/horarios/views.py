@@ -138,21 +138,18 @@ class AsignarSemana(APIView):
     def post(self, request, id):
         try:
             admin_id = get_admin_id_from_request(request)
-            asignar_semana(admin_id, id, request.data)
-
-            return JsonResponse(
-                {"estado": "ok", "msg": "Asignaciones creadas"},
-                status=HTTPStatus.CREATED
-            )
-
-        except ValidationError as e:
-            return JsonResponse(
-                {"estado": "error", "msg": str(e)},
-                status=HTTPStatus.BAD_REQUEST
-            )
-
         except Exception:
-            return JsonResponse(
-                {"estado": "error", "msg": "Error interno"},
-                status=HTTPStatus.INTERNAL_SERVER_ERROR
+            return JsonResponse( {"estado": "error", "msg": "Error interno"}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
+
+         
+        serializer = AsignarDiaSerializer(data={"admin_id":admin_id, "data":request.data})
+        serializer.is_valid(raise_exception=True)
+
+        data = AsignarPersonalService.asignar_semana(
+            **serializer.validated_data
+        )
+        
+        return JsonResponse(
+                {"estado": "ok", "msg": "Horario Creado"},
+                status=201
             )

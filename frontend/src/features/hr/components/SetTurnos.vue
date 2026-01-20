@@ -1,8 +1,10 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
-import { useObtenerPersonalActivo } from '../composables/usePersonalActivo'
+import { ref, onMounted, reactive, computed } from 'vue';
+import { useObtenerPersonalActivo, } from '../composables/usePersonalActivo'
+import { useAsignarPersonal } from '../composables/useHorario';
+import useToast from '@/stores/useToast';
 
-defineProps({
+const props = defineProps({
   items: {
     type: Object,
     required: true
@@ -12,8 +14,10 @@ defineProps({
 
 
 const { sendData: getPersonal, data: dataPersonal, loading: loadingPersonal, error: errorPersonal } = useObtenerPersonalActivo()
+const { sendData, data, loading, error} = useAsignarPersonal()
 const emit = defineEmits(['horarioData'])
 let personalList = ref([]);
+const { trigger } = useToast()
 
 const fetchEmployees = async () => {
   await getPersonal();
@@ -27,6 +31,28 @@ onMounted(() => {
 
 
 const selectedEmpleadoPorDia = reactive({})
+const horarioID = computed(() => props.items.horario.id)
+
+const onSelectEmpleado = async (dia) =>{
+  console.log(dia, selectedEmpleadoPorDia[dia],  )
+  let personal = selectedEmpleadoPorDia[dia]
+  let id = horarioID.value 
+   try {
+        await sendData(id,
+            {
+               dia, personal
+            })
+
+
+        emit('created');
+
+    } catch (error) {
+        trigger(error)
+    }
+
+}
+
+
 
 </script>
 
@@ -52,10 +78,12 @@ const selectedEmpleadoPorDia = reactive({})
         <tr v-for="(dia, index) in items?.horario?.dias" :key="dia.id" class="  border-t hover:bg-slate-200">
           <td class=" text-left px-4 py-3">{{ dia.dia_nombre }} </td>
           <td>
-            <select>
+            <select
+               v-model="selectedEmpleadoPorDia[dia.id]"
+               @change="onSelectEmpleado(dia.id)">
               <option class="text-center" value="">Seleccionar personal</option>
 
-              <option v-for="emp in personalList" :key="emp.id" :value="emp.id">
+              <option v-for="emp in personalList" :key="emp.id" :value="emp.id" >
                 {{ emp.nombre_completo }} — {{ emp.rol? emp.rol : "Sin Rol"  }}
               </option>
             </select>
