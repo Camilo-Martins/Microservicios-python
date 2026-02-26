@@ -57,28 +57,68 @@ class GetHorarioService:
 class AsignarPersonalService:      
     @staticmethod
     @transaction.atomic  
-    def asignar_semana(admin_id, horario_id, dia_id, empleado_id):
+    def asignar_semana(admin_id, id, dia, personal):
       
+        horario = get_object_or_404(
+            HorarioSemanal,
+            id=id
+        )
+
 
         empleado = get_object_or_404(
             Empleado,
-            id=empleado_id,
+            id=personal,
             admin_id=admin_id
         )
 
     
         dia = get_object_or_404(
             DiaHorario,
-            horario=horario_id,
-            dia=int(dia_id)
+            horario=horario,
+            id=int(dia)
         )
 
+     
         asignacion = AsignacionDia.objects.create(
             dia=dia,
             empleado=empleado
         )
 
         return asignacion
+
+
+class DesasginarPersonalService:      
+    @staticmethod
+    @transaction.atomic  
+    def desasginar_semana(admin_id, id, dia, personal):
+      
+        horario = get_object_or_404(
+            HorarioSemanal,
+            id=id
+        )
+
+
+        empleado = get_object_or_404(
+            Empleado,
+            id=personal,
+            admin_id=admin_id
+        )
+
+    
+        dia = get_object_or_404(
+            DiaHorario,
+            horario=horario,
+            id=int(dia)
+        )
+
+     
+        asignacion = AsignacionDia.objects.filter(
+            dia=dia,
+            empleado=empleado
+        ).delete()
+
+        return asignacion
+
 
 def desactivar_horario(admin_id, id):
 

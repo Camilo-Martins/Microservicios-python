@@ -141,12 +141,44 @@ class AsignarSemana(APIView):
         except Exception:
             return JsonResponse( {"estado": "error", "msg": "Error interno"}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
+        print(id, request.data)
          
-        serializer = AsignarDiaSerializer(data={"admin_id":admin_id, "data":request.data})
+        serializer = AsignarDiaSerializer(data={"admin_id":admin_id, "id":id,  "data":request.data})
         serializer.is_valid(raise_exception=True)
 
         data = AsignarPersonalService.asignar_semana(
-            **serializer.validated_data
+                admin_id=admin_id,
+                id=id,
+                dia=request.data.get("dia"),
+                personal=request.data.get("personal"),
+        )
+        
+        return JsonResponse(
+                {"estado": "ok", "msg": "Horario Creado"},
+                status=201
+            )
+
+
+class DesasignarSemana(APIView):
+    @logueado()
+
+   
+    def post(self, request, id):
+        try:
+            admin_id = get_admin_id_from_request(request)
+        except Exception:
+            return JsonResponse( {"estado": "error", "msg": "Error interno"}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
+
+        print(id, request.data)
+         
+        serializer = AsignarDiaSerializer(data={"admin_id":admin_id, "id":id,  "data":request.data})
+        serializer.is_valid(raise_exception=True)
+
+        data = DesasginarPersonalService.desasginar_semana(
+                admin_id=admin_id,
+                id=id,
+                dia=request.data.get("dia"),
+                personal=request.data.get("personal"),
         )
         
         return JsonResponse(

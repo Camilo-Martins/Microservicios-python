@@ -37,6 +37,8 @@ onMounted(() => {
         />
         <SetTurnos
             :items="horarioData"
+            @addPersonal="fetchHorario"
+            @deletePersonal="fetchHorario"
         />
     </section>
 </template>
