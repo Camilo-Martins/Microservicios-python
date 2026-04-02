@@ -5,46 +5,31 @@ import { useAsignarPersonal, useDesasignarPersonal } from '../composables/useHor
 import useToast from '@/stores/useToast'
 
 const props = defineProps({
+  personallist: {
+    type: Array,
+    required: true,
+  },
   items: {
     type: Object,
     required: true,
   },
 })
 
-const {
-  sendData: getPersonal,
-  data: dataPersonal,
-  loading: loadingPersonal,
-  error: errorPersonal,
-} = useObtenerPersonalActivo()
-const {
-  sendData: eliminarPersonal,
-  data: dataEliminar,
-  loading: loadingEliminar,
-  error: errorEliminar,
-} = useDesasignarPersonal()
-const { sendData, data, loading, error } = useAsignarPersonal()
+const { sendData: eliminarPersonal } = useDesasignarPersonal()
+const { sendData } = useAsignarPersonal()
 
-const emit = defineEmits(['horarioData', 'addPersonal', 'deletePersonal'])
-let personalList = ref([])
+const emit = defineEmits(['horarioData', 'addPersonal', 'deletePersonal', 'persona-data'])
+
 const { trigger } = useToast()
-const selectedEmpleadoPorDia = reactive({})
 const horarioID = computed(() => props.items.horario.id)
-
-const fetchEmployees = async () => {
-  await getPersonal()
-  personalList.value = dataPersonal.value
-  console.log(personalList.value)
-}
-
-onMounted(() => {
-  fetchEmployees()
-})
-
 const onSelectEmpleado = async (dia, empleadoID) => {
   let personal = empleadoID
   let id = horarioID.value
-  console.log(id, personal, dia)
+
+  if (personal == '' || personal == 'Seleccionar') {
+    trigger('Seleccione personal')
+  }
+
   try {
     await sendData(id, {
       dia,
@@ -52,7 +37,6 @@ const onSelectEmpleado = async (dia, empleadoID) => {
     })
 
     emit('addPersonal')
-    fetchEmployees()
   } catch (error) {
     trigger('El Personal seleccionado ya está asignado')
   }
@@ -81,7 +65,10 @@ const onPagarEmpleado = async (personal) => {
 </script>
 
 <template>
-  <div class="max-h-96 overflow-y-auto bg-white rounded-xl shadow-sm border border-slate-200">
+  <div class="max-h-96 overflow-y-auto rounded-xl shadow-sm border border-slate-200">
+    <div>
+      <h5 class="text-center py-4 font-bold">{{ items.horario?.nombre }}</h5>
+    </div>
     <table
       class="min-w-full border-collapse text-sm overflow-y-auto bg-white rounded-xl shadow-sm border border-slate-200"
     >
@@ -106,18 +93,19 @@ const onPagarEmpleado = async (personal) => {
 
           <!-- Selector compacto -->
           <td class="px-4 py-3 align-top">
-          
             <select
-             
-              @change="onSelectEmpleado(dia.id,  $event.target.value)"
+              @change="onSelectEmpleado(dia.id, $event.target.value)"
               class="w-48 rounded border border-slate-300 bg-white px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
             >
-              <option value="" disabled>Seleccionar</option>
-              <option v-for="emp in personalList" :key="emp.id" :value="emp.id">
+              <option value="Seleccionar">Seleccionar</option>
+              <option
+                v-for="emp in personallist.filter((e) => e.is_active)"
+                :key="emp.id"
+                :value="emp.id"
+              >
                 {{ emp.nombre_completo }}
               </option>
             </select>
-           
           </td>
 
           <!-- Personal asignado (espacio libre) -->

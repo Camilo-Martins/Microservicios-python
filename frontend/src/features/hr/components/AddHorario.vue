@@ -1,45 +1,42 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import BaseButton from '@/components/BaseButton.vue';
-import useToast from '@/stores/useToast';
-import { useAddHorario } from '../composables/useHorario';
-
+import { ref, onMounted } from 'vue'
+import BaseButton from '@/components/BaseButton.vue'
+import useToast from '@/stores/useToast'
+import { useAddHorario } from '../composables/useHorario'
+import { Form, Field, ErrorMessage } from 'vee-validate'
 const { trigger } = useToast()
 const { sendData, loading, error, data } = useAddHorario()
 
 const emit = defineEmits(['created'])
 
-
 const submit = async () => {
-    
   try {
-      await sendData()
+    await sendData()
 
-    emit('created');
+    emit('created')
   } catch (error) {
-     trigger(error)
+    trigger(error)
   }
-   
-
-
-};
+}
 </script>
 
 <template>
+  <!-- Formulario -->
 
-    <!-- Formulario -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-8">
-        <form @submit.prevent="submit"
-            class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
-
-            <BaseButton label="Agregar Personal" type="submit">
-                Crear Horario
-            </BaseButton>
-
-        </form>
-       
+  <form @submit.prevent="submit"  class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
+     <div class="form-field">
+      <div class="pb-3"><label class="form.label">Nombre</label>:</div>
+ 
+      <Field
+        type="submit"
+        name="nombre_completo"
+        class="form-input"
+        v-model="nombre_completo"
+        placeholder="Ej: Camilo Álvarez"
+      />
     </div>
-
+ 
+  </form>
 </template>
 
 <style scoped></style>

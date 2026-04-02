@@ -2,28 +2,14 @@
 import { Form, Field, ErrorMessage } from 'vee-validate'
 import { ref } from 'vue'
 import { useAddPersonal } from '../composables/useAddPersonal'
-
 import BaseButton from '@/components/BaseButton.vue'
-import { personalSchema } from '@/features/private/schemas/personalSchema'
+
 import useToast from '@/stores/useToast'
+import { useAddHorario } from '../composables/useHorario'
 
 const { trigger } = useToast()
 
 const { sendData, loading, error } = useAddPersonal()
-
-const formRef = ref(null)
-
-const roles = [
-  { label: 'Vendedor', value: 'Vendedor' },
-  { label: 'Cajero', value: 'Cajero' },
-  { label: 'Seguridad', value: 'Seguridad' },
-  { label: 'Reponedor', value: 'Reponedor' },
-]
-
-const medios_pago = [
-  { label: 'Transferencia', value: 'Transferencia' },
-  { label: 'Efectivo', value: 'Efectivo' },
-]
 
 let rol = ref('')
 let nombre_completo = ref('')
@@ -32,7 +18,19 @@ let medio_pago = ref('')
 let pago_diario = ref('')
 let rut = ref('')
 
-const emit = defineEmits(['created'])
+const emit = defineEmits(['created', 'generated'])
+const { sendData: sendHorario, error: errorHorario, data } = useAddHorario()
+
+const submitHorario = async () => {
+  console.log('!')
+  try {
+    await sendHorario()
+
+    emit('generated')
+  } catch (error) {
+    trigger(errorHorario)
+  }
+}
 
 const submit = async () => {
   try {
@@ -82,14 +80,6 @@ const submit = async () => {
         />
       </div>
 
-      <select v-model="rol" class="form-input">
-        <option value="" disabled>Seleccionar</option>
-
-        <option v-for="rol in roles" :key="rol.value" :value="rol.value">
-          {{ rol.label }}
-        </option>
-      </select>
-
       <div class="form-field">
         <div class="pb-3">
           <label class="form.label">Telefono</label>
@@ -118,6 +108,14 @@ const submit = async () => {
       </div>
 
       <BaseButton label="Agregar Personal" type="submit"> Agregar </BaseButton>
+      <BaseButton
+        label="Generar Horario"
+        class="bg-green-800 hover:bg-green-900"
+        type="button"
+        @click="submitHorario"
+      >
+        Generar Horario
+      </BaseButton>
     </Form>
   </div>
 </template>
