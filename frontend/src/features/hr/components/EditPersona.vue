@@ -113,21 +113,7 @@ const submit = async () => {
 
             </div>
 
-            <div class="form-field">
-                <div class="pb-3">
-                    <label class="form.label">ROL</label>
-                </div>
-
-
-                <select v-model="form.rol" class="form-input">
-                    <option value="" disabled>Seleccionar</option>
-
-                    <option v-for="rol in roles" :key="rol.value" :value="rol.value">
-                        {{ rol.label }}
-                    </option>
-                </select>
-
-            </div>
+    
 
             <div class="form-field">
                 <div class="pb-3">
@@ -150,20 +136,7 @@ const submit = async () => {
 
             </div>
 
-            <div class="form-field">
-                <div class="py-3">
-                    <label class="form.label">Medio Pago</label>
-                </div>
-
-                <select v-model="form.medio_pago" class="form-input">
-                    <option value="" disabled>Seleccionar</option>
-
-                    <option v-for="mp in medio_pago" :key="mp.value" :value="mp.value">
-                        {{ mp.label }}
-                    </option>
-                </select>
-
-            </div>
+           
 
             <BaseButton label="Editar" type="submit">
                 Editar

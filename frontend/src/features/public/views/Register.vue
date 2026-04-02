@@ -17,7 +17,7 @@ const router = useRouter();
 const { sendData, loading, error } = useRegister()
 
 const submit = async () => {
-  await sendData({ nombre: nombre.value, nombre_tienda: nombre_tienda.value, email: email.value, password: password.value })
+  await sendData({ nombre: nombre.value, username: nombre.value, nombre_tienda: nombre_tienda.value, email: email.value, password: password.value })
 
   if (loading.value == false) {
     succes = true

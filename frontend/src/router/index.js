@@ -85,6 +85,21 @@ const router = createRouter({
           name: 'horario',
           component: HorarioView,
         },
+        {
+          path: '/panel/productos',
+          name: 'productos',
+          component: HorarioView,
+        },
+        {
+          path: '/panel/proveedores',
+          name: 'proveedores',
+          component: HorarioView,
+        },
+        {
+          path: '/panel/ventas',
+          name: 'ventas',
+          component: HorarioView,
+        },
       ],
     },
 

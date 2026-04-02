@@ -59,13 +59,17 @@ class NewPersonalSerializer(serializers.Serializer):
     )
 	
     def validate_rut(self, value):
-        if Empleado.objects.filter(rut=value).exists():
-            raise serializers.ValidationError("Personal ya existe.")
+        admin_id = self.context.get("admin_id")
+        if Empleado.objects.filter( rut=value, admin_id=admin_id).exists():
+            #admin_id=admin_id,
+            raise serializers.ValidationError("")
         return value
 
 
     def validate_telefono(self, value):
-        if Empleado.objects.filter(telefono=value).exists():
+        admin_id = self.context.get("admin_id")
+        print(admin_id)
+        if Empleado.objects.filter(admin_id=admin_id, telefono=value).exists():
             raise serializers.ValidationError("Personal ya existe.")
         return value
 

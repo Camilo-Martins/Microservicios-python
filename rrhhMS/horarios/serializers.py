@@ -12,14 +12,14 @@ import os
 class EmpleadoMiniSerializer(serializers.ModelSerializer):
     class Meta:
         model = Empleado
-        fields = ["id", "nombre_completo"]
+        fields = ["id", "nombre_completo", "telefono"]
 
 
 class AsignacionSerializer(serializers.ModelSerializer):
     empleado = EmpleadoMiniSerializer(read_only=True)
     class Meta:
         model = AsignacionDia
-        fields = ["id", "empleado"]
+        fields = ["id", "empleado", ]
 
 
 class DiaHorarioSerializer(serializers.ModelSerializer):
@@ -67,6 +67,7 @@ class AsignarDiaSerializer(serializers.Serializer):
     id = serializers.IntegerField(  required=False,  )
     personal = serializers.IntegerField(  required=False, )
     dia = serializers.IntegerField( required=False,   )
+    telefono = serializers.IntegerField( required=False,   )
 
     def validate_asignacion_dia(self,value):
         dia = self.context.get("dia")

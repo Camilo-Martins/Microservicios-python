@@ -27,15 +27,10 @@ const isActive = (name) => route.name === name
         </span>
       </RouterLink>
 
-      <div class="flex items-center gap-2 text-sm font-bold uppercase ">
+      <div class="flex items-center gap-2 text-sm font-bold capitalice ">
         <RouterLink to="/panel/personal" class="nav-link  px-5 hover:bg-white/20 transition px-3 py-1 rounded-md"
           :class="{ 'nav-active': isActive('personal') }">
-          Personal
-        </RouterLink>
-
-        <RouterLink to="/panel/horario" class="nav-link px-5 hover:bg-white/20 transition px-3 py-1 rounded-md"
-          :class="{ 'nav-active': isActive('horarios') }">
-          Horarios
+          Personal y Horarios
         </RouterLink>
 
         <RouterLink to="/panel/productos" class="nav-link px-5 hover:bg-white/20 transition px-3 py-1 rounded-md"
@@ -46,6 +41,11 @@ const isActive = (name) => route.name === name
         <RouterLink to="/panel/proveedores" class="nav-link px-5 hover:bg-white/20 transition px-3 py-1 rounded-md"
           :class="{ 'nav-active': isActive('proveedores') }">
           Proveedores
+        </RouterLink>
+
+         <RouterLink to="/panel/ventas" class="nav-link px-5 hover:bg-white/20 transition px-3 py-1 rounded-md"
+          :class="{ 'nav-active': isActive('ventas') }">
+          Ventas
         </RouterLink>
 
 

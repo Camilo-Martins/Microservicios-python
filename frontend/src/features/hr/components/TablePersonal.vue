@@ -15,15 +15,16 @@ const emit = defineEmits(['toggle-status', 'select','persona-data'])
 </script>
 
 <template>
-<div class="max-h-96 overflow-y-auto bg-white rounded-xl shadow-sm border border-slate-200">
-  <table class="min-w-full border-collapse text-center">
+<div class="max-h-96 overflow-y-auto bg-white rounded-xl shadow-sm border 
+border-slate-200">
+  <table   class="min-w-full border-collapse text-sm  
+          overflow-y-auto bg-white rounded-xl shadow-sm border 
+          border-slate-200">
         <thead class="bg-slate-100 text-slate-600">
             <tr>
              
                 <th class="px-4 py-3 ">Nombre</th>
                 <th class="px-4 py-3 ">Rut</th>
-                <th class="px-4 py-3 ">Rol</th>
-                 <th class="px-4 py-3 ">Medio Pago</th>
                 <th class="px-4 py-3 ">Remuneración ($)</th>
                 <th class="px-4 py-3 ">Estado</th>
                 <th class="px-4 py-3 ">Contacto</th>
@@ -34,8 +35,6 @@ const emit = defineEmits(['toggle-status', 'select','persona-data'])
             <tr v-for="persona in items" :key="persona.id" class="border-t hover:bg-slate-200">
                 <td class="px-4 py-3"> {{ persona.nombre_completo }}</td>
                 <td class="px-4 py-3">{{ persona.rut }}</td>
-                <td class="px-4 py-3">{{ persona.rol }}</td>
-                 <td class="px-4 py-3">{{ persona.medio_pago }}</td>
                 <td class="px-4 py-3">{{ persona.pago_diario }}</td>
                 <td class="px-4 py-3">
                   <button

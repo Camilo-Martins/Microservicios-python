@@ -82,6 +82,7 @@ class AsignarPersonalService:
         asignacion = AsignacionDia.objects.create(
             dia=dia,
             empleado=empleado
+         
         )
 
         return asignacion

@@ -129,7 +129,7 @@ class RegistroEmpleado(APIView):
         except Exception:
             return JsonResponse({"estado": "error", "msg": "Error interno"},status=500)
         
-        serializer = NewPersonalSerializer(admin_id, request.data)
+        serializer = NewPersonalSerializer(context={"admin_id": admin_id}, data=request.data)
         serializer.is_valid(raise_exception=True)
 
         NewPersonalService.crear_empleado(

@@ -141,7 +141,6 @@ class AsignarSemana(APIView):
         except Exception:
             return JsonResponse( {"estado": "error", "msg": "Error interno"}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
-        print(id, request.data)
          
         serializer = AsignarDiaSerializer(data={"admin_id":admin_id, "id":id,  "data":request.data})
         serializer.is_valid(raise_exception=True)
