@@ -1,6 +1,29 @@
 version: '3.9'
 
 services:
+  storems:
+    build: ./storems
+    container_name: storems
+    volumes:
+      - ./storems:/app
+    ports:
+      - '8005:8000'
+    depends_on:
+      - store_db
+    env_file:
+      - .env
+
+  store_db:
+    image: mysql:8
+    container_name: store_db
+    environment:
+      MYSQL_DATABASE: ${HR_DB_NAME}
+      MYSQL_USER: ${HR_DB_USER}
+      MYSQL_PASSWORD: ${HR_DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - store_db_data:/var/lib/mysql
+
   rrhhms:
     build: ./rrhhms
     container_name: rrhhms
@@ -57,6 +80,8 @@ services:
     depends_on:
       - rrhhms
       - authms
+      - storems
 volumes:
   auth_db_data:
   rrhh_db_data:
+  store_db_data:
