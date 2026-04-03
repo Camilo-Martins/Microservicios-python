@@ -51,7 +51,6 @@ class NewPersonalService:
             admin_id=admin_id
         )
 
-        print(personal)
         return personal
 
 

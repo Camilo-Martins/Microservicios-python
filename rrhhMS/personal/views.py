@@ -1,8 +1,6 @@
 from rest_framework.views import APIView
 from django.http.response import JsonResponse
 from http import HTTPStatus
-from django.http import Http404
-from django.core.exceptions import ValidationError
 
 #Swagger
 from drf_yasg.utils import swagger_auto_schema

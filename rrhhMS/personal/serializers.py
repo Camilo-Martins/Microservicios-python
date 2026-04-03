@@ -1,7 +1,5 @@
 from rest_framework import serializers
 from .models import*
-from dotenv import load_dotenv
-import os
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
