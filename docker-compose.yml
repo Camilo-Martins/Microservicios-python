@@ -17,9 +17,9 @@ services:
     image: mysql:8
     container_name: store_db
     environment:
-      MYSQL_DATABASE: ${HR_DB_NAME}
-      MYSQL_USER: ${HR_DB_USER}
-      MYSQL_PASSWORD: ${HR_DB_PASSWORD}
+      MYSQL_DATABASE: ${STORE_DB_NAME}
+      MYSQL_USER: ${STORE_DB_USER}
+      MYSQL_PASSWORD: ${STORE_DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - store_db_data:/var/lib/mysql

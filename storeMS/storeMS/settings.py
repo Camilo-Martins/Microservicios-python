@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +28,7 @@ SECRET_KEY = 'django-insecure-jpv7$j5dd2rm@y9^caydim9550(s!u7m*6n_ruanfowgp8#lm^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
+    'rest_framework',
+    'corsheaders',
     'notas',
     'proveedores',
     'productos'
@@ -50,9 +56,26 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'storeMS.urls'
+
+CORS_ORIGIN_ALLOW_ALL =True
+CORS_ALLOW_CREDENTIALS =True
+CORS_ORIGIN_WHITELIST=[
+    "http://localhost",
+    "http://localhost:8005"
+
+]
+CORS_ORIGIN_REGEX_WHITELIST= [
+    "http://localhost",
+    "http://localhost:8005"
+
+
+]
+
 
 TEMPLATES = [
     {
@@ -76,9 +99,16 @@ WSGI_APPLICATION = 'storeMS.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.getenv('STORE_DB_NAME'),
+        "USER": os.getenv('STORE_DB_USER'),
+        "PASSWORD": os.getenv('STORE_DB_PASSWORD'),
+        "HOST": os.getenv('STORE_DB_HOST'),
+        "PORT": os.getenv('STORE_DB_PORT'),
+        "OPTIONS": {
+            "charset": "utf8mb4",
+        },
     }
 }
 

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.core.validators import RegexValidator
-from models import Nota
+from .models import Nota
 
 #Serializer para obtener notas
 class NotaSerializer(serializers.ModelSerializer):
@@ -14,11 +14,13 @@ class ObtenerNotasSerializer(serializers.Serializer):
         required=True,
         allow_blank=False,
     )
- 
-    def validate_admin_id(self, value):
-        if not Nota.objects.filter(admin_id=value).exists():
-            raise serializers.ValidationError("No tienes los permisos")
-        return value
+    id = serializers.CharField(required=False, allow_blank=True)
+    nombre_nota = serializers.CharField(required=False, allow_blank=True)
+    is_active = serializers.BooleanField(required=False)
+    observaciones = serializers.CharField(required=False, allow_blank=True)
+    class Meta:
+        model = Nota
+        fields = ("id", "admin_id", "nombre_nota", "is_active", "observaciones", "created_at")
 
 
 # Seralizer para crear una nueva nota
@@ -75,23 +77,4 @@ class EditNotaSerializer(serializers.Serializer):
         ]
     )
 
-    admin_id = serializers.CharField(
-        required=True,
-        allow_blank=False,
-    )
-
-    id = serializers.CharField(
-        required=True,
-        allow_blank=False,
-    )
-
-    def validate_admin_id(self, value):
-        if not Nota.objects.filter(admin_id=value).exists():
-            raise serializers.ValidationError("No tienes los permisos")
-        return value
-
-
-    def validate_admin(self, value):
-        if not Nota.objects.filter(id=value).exists():
-            raise serializers.ValidationError("No existe la nota")
-        return value
+    is_active = serializers.BooleanField(required=False)

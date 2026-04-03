@@ -8,3 +8,4 @@ django-autoslug
 python-jose
 django-cors-headers
 setuptools
+drf-yasg
