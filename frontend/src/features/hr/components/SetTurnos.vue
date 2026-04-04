@@ -67,7 +67,7 @@ const onPagarEmpleado = async (personal) => {
 <template>
   <div class="max-h-96 overflow-y-auto rounded-xl shadow-sm border border-slate-200">
     <div>
-      <h5 class="text-center py-4 font-bold">{{ items.horario?.nombre }}</h5>
+      <h5 class="text-center py-4 font-bold">{{ items.horario?.nombre? items.horario?.nombre: "Por favor genere un horario" }}</h5>
     </div>
     <table
       class="min-w-full border-collapse text-sm overflow-y-auto bg-white rounded-xl shadow-sm border border-slate-200"

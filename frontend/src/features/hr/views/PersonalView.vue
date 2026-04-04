@@ -46,6 +46,7 @@ const fetchEmployees = async () => {
 }
 
 onMounted(() => {
+   fetchHorario()
   fetchEmployees()
 })
 
@@ -63,9 +64,7 @@ const fetchHorario = async () => {
   horarioData.value = dataHorario.value
 }
 
-onMounted(() => {
-  fetchHorario()
-})
+
 </script>
 
 <template>
