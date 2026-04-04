@@ -30,7 +30,7 @@ class NewNotaService:
 class EditNotaService:
     @staticmethod
     @transaction.atomic
-    def editar_nota(*, admin_id, id, nombre_nota, observaciones, is_active):
+    def editar_nota(*, admin_id, id, nombre_nota=None, observaciones=None, is_active=None):
         
         nota = get_object_or_404(
             Nota,
@@ -38,9 +38,9 @@ class EditNotaService:
             id=id
         )
 
-        nota.nombre_nota = nombre_nota
-        nota.observaciones = observaciones
-        nota.is_active = is_active
+        nota.nombre_nota = nombre_nota if nombre_nota is not None else nota.nombre_nota
+        nota.observaciones = observaciones if observaciones is not None else nota.observaciones
+        nota.is_active = is_active if is_active is not None else nota.is_active 
         nota.save(update_fields=["nombre_nota", "observaciones", "is_active"])
         
         return nota

@@ -54,7 +54,7 @@ class NewNotaSerializer(serializers.Serializer):
 class EditNotaSerializer(serializers.Serializer):
 
     nombre_nota = serializers.CharField(
-        required=True,
+        required=False,
         allow_blank=False,
         max_length=100,
         validators=[
@@ -66,7 +66,7 @@ class EditNotaSerializer(serializers.Serializer):
     )
 
     observaciones = serializers.CharField(
-        required=True,
+        required=False,
         allow_blank=False,
         max_length=100,
         validators=[
@@ -77,4 +77,4 @@ class EditNotaSerializer(serializers.Serializer):
         ]
     )
 
-    is_active = serializers.BooleanField(required=False)
+    is_active = serializers.BooleanField(required=False, allow_null=False)

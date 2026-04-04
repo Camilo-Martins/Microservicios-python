@@ -1,18 +1,26 @@
 <script setup>
-import { Form, Field, ErrorMessage } from 'vee-validate'
-import { ref, onMounted, watch } from 'vue'
+import { Form, Field } from 'vee-validate'
+import { ref, onMounted } from 'vue'
 import useToast from '@/stores/useToast'
 import BaseButton from '@/components/BaseButton.vue'
-import { useGetNota, useAddNota } from '@/features/notas/composables'
+import { useGetNota, useAddNota, useEditNota } from '@/features/notas/composables'
 const { trigger } = useToast()
-const { sendData, data, loading, error } = useGetNota()
 
+const { sendData, data, loading, error } = useGetNota()
+const editing = ref({
+  id: null,
+  field: null,
+  value: '',
+})
 const {
   sendData: sendAddNota,
-  data: dataAddNota,
-  loading: loadingAddNota,
-  error: errorAddnota,
+
 } = useAddNota()
+
+const {
+  sendData: sendEditNota,
+
+} = useEditNota()
 
 let notasList = ref({})
 let nombre_nota = ref('')
@@ -20,9 +28,48 @@ let observaciones = ref('')
 
 const getNota = async () => {
   await sendData()
-
-  console.log(data.value)
   notasList.value = data.value.data
+}
+
+const startEdit = (nota, field) => {
+  editing.value.id = nota.id
+  editing.value.field = field
+  editing.value.value = nota[field] ?? ''
+}
+
+const cancelEdit = () => {
+  editing.value.id = null
+  editing.value.field = null
+  editing.value.value = ''
+}
+
+const saveEdit = async (nota) => {
+  const { field, value } = editing.value
+
+  if (!field) return
+
+  if (value === nota[field]) {
+    cancelEdit()
+    return
+  }
+
+  const confirmed = window.confirm('¿Guardar cambios?')
+  if (!confirmed) {
+    cancelEdit()
+    return
+  }
+
+  try {
+    await sendEditNota(nota.id, {
+      [field]: value,
+    })
+
+    nota[field] = value
+    getNota()
+  } catch (error) {
+  } finally {
+    cancelEdit()
+  }
 }
 
 const submit = async () => {
@@ -38,6 +85,24 @@ const submit = async () => {
   } catch (error) {
     trigger(error)
   }
+}
+
+const toggleEstado = async (nota) => {
+  const nuevoEstado = !nota.is_active
+
+  const confirmed = window.confirm(
+    `¿Deseas marcar esta nota como ${nuevoEstado ? 'Activa' : 'Inactiva'}?`,
+  )
+  if (!confirmed) return
+
+  try {
+    await sendEditNota(nota.id, {
+      is_active: nuevoEstado,
+    })
+
+    nota.is_active = nuevoEstado
+    getNota()
+  } catch (error) { }
 }
 
 onMounted(() => {
@@ -60,13 +125,8 @@ onMounted(() => {
             <div class="form-field md:col-span-2">
               <div class="pb-3"><label class="form.label">Nombre</label>:</div>
 
-              <Field
-                type="text"
-                name="nombre_nota"
-                class="form-input"
-                v-model="nombre_nota"
-                placeholder="Ej: Llamar a María"
-              />
+              <Field type="text" name="nombre_nota" class="form-input" v-model="nombre_nota"
+                placeholder="Ej: Llamar a María" />
             </div>
 
             <div class="form-field md:col-span-4">
@@ -74,13 +134,8 @@ onMounted(() => {
                 <label class="form.label">Observaciones</label>
               </div>
 
-              <Field
-                type="text"
-                name="observaciones"
-                class="form-input"
-                v-model="observaciones"
-                placeholder="María tiene las llaves de la bodega!"
-              />
+              <Field type="text" name="observaciones" class="form-input" v-model="observaciones"
+                placeholder="María tiene las llaves de la bodega!" />
             </div>
 
             <BaseButton label="Agregar Personal" type="submit"> Agregar </BaseButton>
@@ -90,40 +145,56 @@ onMounted(() => {
     </div>
 
     <!-- Info -->
-    <span
-      class="text-blue-800 px-5 font-medium bg-blue-200 rounded-xl shadow-sm border border-blue-800 py-2 my-5"
-    >
-      Puede editar una nota haciendo doble clic sobre cualquier fila de la tabla!</span
-    >
+    <span class="text-blue-800 px-5 font-medium bg-blue-200 rounded-xl shadow-sm border border-blue-800 py-2 my-5">
+      Puede editar una nota haciendo clic sobre cualquier fila de la tabla!</span>
     <br />
     <br />
     <!-- Tabla de Notas -->
 
     <div class="max-h-96 overflow-y-auto bg-white rounded-xl shadow-sm border border-slate-200">
       <table
-        class="min-w-full border-collapse text-sm overflow-y-auto bg-white rounded-xl shadow-sm border border-slate-200"
-      >
+        class="min-w-full border-collapse text-sm overflow-y-auto bg-white rounded-xl shadow-sm border border-slate-200">
         <thead class="bg-slate-100 text-slate-600">
           <tr>
             <th class="px-4 py-3 text-left" colspan="2">Nombre</th>
             <th class="px-4 py-3 text-center" colspan="8">Detalle</th>
-
             <th class="px-4 py-3 text-center" colspan="2">Estado</th>
           </tr>
         </thead>
-        <tbody>
-          <tr v-for="nota in notasList" :key="nota.id" class="border-t hover:bg-slate-200">
-            <td class="px-4 py-3 text-left" colspan="2">{{ nota.nombre_nota }}</td>
-            <td class="px-4 py-3 text-left" colspan="8">{{ nota.observaciones }}</td>
 
+        <tbody>
+          <tr v-for="nota in notasList" :key="nota.id" class="border-t hover:bg-slate-200" :class="[
+            editing.id === nota.id ? 'bg-blue-100 ring-1 ring-blue-400' : 'hover:bg-slate-200',
+          ]">
+            <!-- NOMBRE -->
+            <td class="px-4 py-3 text-left truncate max-w-xs" colspan="2 ">
+              <input v-if="editing.id === nota.id && editing.field === 'nombre_nota'" v-model="editing.value"
+                type="text" class="w-full rounded border border-slate-300 px-2 py-1" @blur="saveEdit(nota)"
+                @keyup.enter="saveEdit(nota)" @keyup.esc="cancelEdit" />
+
+              <span v-else class="block w-full cursor-pointer" @click="startEdit(nota, 'nombre_nota')">
+                {{ nota.nombre_nota }}
+              </span>
+            </td>
+
+            <!-- OBSERVACIONES -->
+            <td class="px-4 py-3 text-left truncate max-w-xs" colspan="8">
+              <textarea v-if="editing.id === nota.id && editing.field === 'observaciones'" v-model="editing.value"
+                rows="3" class="w-full rounded border border-slate-300 px-2 py-1 resize-none" @blur="saveEdit(nota)"
+                @keyup.esc="cancelEdit"></textarea>
+
+              <span v-else class="block w-full cursor-pointer whitespace-pre-line"
+                @click="startEdit(nota, 'observaciones')">
+                {{ nota.observaciones }}
+              </span>
+            </td>
+
+            <!-- ESTADO -->
             <td class="px-4 py-3 text-center" colspan="2">
-              <button
-                :class="
-                  nota.is_active
-                    ? 'px-3 py-1 text-sm rounded bg-green-100 text-green-700 hover:bg-green-200'
-                    : 'px-3 py-1 text-sm rounded bg-red-100 text-red-700 hover:bg-red-200'
-                "
-              >
+              <button @click="toggleEstado(nota)" :class="nota.is_active
+                ? 'px-3 py-1 text-sm rounded bg-green-100 text-green-700 hover:bg-green-200'
+                : 'px-3 py-1 text-sm rounded bg-red-100 text-red-700 hover:bg-red-200'
+                ">
                 {{ nota.is_active ? 'Activo' : 'Inactivo' }}
               </button>
             </td>
