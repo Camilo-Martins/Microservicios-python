@@ -1,11 +1,9 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import BaseButton from '@/components/BaseButton.vue'
 import useToast from '@/stores/useToast'
 import { useAddHorario } from '../composables/useHorario'
-import { Form, Field, ErrorMessage } from 'vee-validate'
+import {  Field } from 'vee-validate'
 const { trigger } = useToast()
-const { sendData, loading, error, data } = useAddHorario()
+const { sendData } = useAddHorario()
 
 const emit = defineEmits(['created'])
 

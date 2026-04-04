@@ -1,5 +1,5 @@
 <script setup>
-import { Form, Field, ErrorMessage } from 'vee-validate'
+import { Form, Field } from 'vee-validate'
 import { ref } from 'vue'
 import { useAddPersonal } from '../composables/useAddPersonal'
 import BaseButton from '@/components/BaseButton.vue'
@@ -9,7 +9,7 @@ import { useAddHorario } from '../composables/useHorario'
 
 const { trigger } = useToast()
 
-const { sendData, loading, error } = useAddPersonal()
+const { sendData } = useAddPersonal()
 
 let rol = ref('')
 let nombre_completo = ref('')

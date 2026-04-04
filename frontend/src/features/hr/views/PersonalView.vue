@@ -8,32 +8,11 @@ import { useDeletePersonal } from '../composables/useDeletePersonal'
 import AddPersonal from '../components/AddPersonal.vue'
 import { useGetPersona } from '../composables/useGetPersona'
 import { useGetHorario } from '../composables/useHorario'
-import AddHorario from '../components/AddHorario.vue'
 
-const {
-  sendData: getPersonal,
-  data: dataPersonal,
-  loading: loadingPersonal,
-  error: errorPersonal,
-} = useObtenerPersonal()
-const {
-  sendData: sendPersonal,
-  data: deletedPersonal,
-  loading: loadingDeleted,
-  error: errorDeleted,
-} = useDeletePersonal()
-const {
-  sendData: getPersona,
-  data: dataPersona,
-  loading: loadingPersona,
-  error: errorPersona,
-} = useGetPersona()
-const {
-  sendData: getHorario,
-  loading: loadingHorario,
-  error: errorHorario,
-  data: dataHorario,
-} = useGetHorario()
+const { sendData: getPersonal, data: dataPersonal } = useObtenerPersonal()
+const { sendData: sendPersonal } = useDeletePersonal()
+const { sendData: getPersona } = useGetPersona()
+const { sendData: getHorario, data: dataHorario } = useGetHorario()
 let horarioData = ref({})
 
 const selectedId = ref(null)
@@ -46,7 +25,7 @@ const fetchEmployees = async () => {
 }
 
 onMounted(() => {
-   fetchHorario()
+  fetchHorario()
   fetchEmployees()
 })
 
@@ -63,8 +42,6 @@ const fetchHorario = async () => {
   await getHorario()
   horarioData.value = dataHorario.value
 }
-
-
 </script>
 
 <template>
@@ -93,10 +70,9 @@ const fetchHorario = async () => {
       <div class="col-span-6">
         <SetTurnos
           :items="horarioData"
-           :personallist="personalList"
+          :personallist="personalList"
           @addPersonal="fetchHorario"
           @deletePersonal="fetchHorario"
-         
         />
       </div>
     </div>

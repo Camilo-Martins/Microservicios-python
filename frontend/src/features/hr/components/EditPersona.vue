@@ -7,7 +7,7 @@ const props = defineProps({
 })
 
 import { Field } from 'vee-validate'
-import { ref, watch, } from 'vue'
+import { ref, watch } from 'vue'
 import BaseButton from '@/components/BaseButton.vue'
 import { useEditPersonal } from '../composables/useEditPersonal'
 import { useRoute, useRouter } from 'vue-router'
@@ -16,10 +16,9 @@ import useToast from '@/stores/useToast'
 const { sendData } = useEditPersonal()
 
 const route = useRoute()
-const router = useRouter();
+const router = useRouter()
 const id = route.params.id
 const { trigger } = useToast()
-
 
 const form = ref({
   nombre_completo: '',
@@ -65,8 +64,8 @@ const submit = async () => {
 
     emit('created')
     setTimeout(() => {
-    router.push('/panel/personal')
-  }, 1000)
+      router.push('/panel/personal')
+    }, 1000)
   } catch (error) {
     trigger(error)
   }

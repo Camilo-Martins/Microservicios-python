@@ -1,6 +1,5 @@
 <script setup>
-import { ref, onMounted, reactive, computed } from 'vue'
-import { useObtenerPersonalActivo } from '../composables/usePersonalActivo'
+import {computed } from 'vue'
 import { useAsignarPersonal, useDesasignarPersonal } from '../composables/useHorario'
 import useToast from '@/stores/useToast'
 
@@ -22,6 +21,7 @@ const emit = defineEmits(['horarioData', 'addPersonal', 'deletePersonal', 'perso
 
 const { trigger } = useToast()
 const horarioID = computed(() => props.items.horario.id)
+
 const onSelectEmpleado = async (dia, empleadoID) => {
   let personal = empleadoID
   let id = horarioID.value

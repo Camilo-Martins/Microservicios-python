@@ -1,6 +1,6 @@
 // composables/useRegister.ts
 import { ref, readonly } from 'vue'
-import { getNota, addNota, editNota } from './services'
+import { getNota, addNota, editNota } from '../services/services'
 
 export function useGetNota() {
   const data = ref(null)

@@ -22,7 +22,6 @@ class ObtenerNotasSerializer(serializers.Serializer):
         model = Nota
         fields = ("id", "admin_id", "nombre_nota", "is_active", "observaciones", "created_at")
 
-
 # Seralizer para crear una nueva nota
 class NewNotaSerializer(serializers.Serializer):
 

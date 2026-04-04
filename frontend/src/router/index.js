@@ -14,6 +14,7 @@ import PrivateLayout from '@/features/private/components/PrivateLayout.vue'
 import PersonalView from '@/features/hr/views/PersonalView.vue'
 import PersonaView from '@/features/hr/views/PersonaView.vue'
 import HorarioView from '@/features/hr/views/HorarioView.vue'
+import Proveedor from '@/features/proveedores/Proveedor.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -93,7 +94,7 @@ const router = createRouter({
         {
           path: '/panel/proveedores',
           name: 'proveedores',
-          component: HorarioView,
+          component: Proveedor,
         },
         {
           path: '/panel/ventas',

@@ -9,7 +9,7 @@ const toastClass = computed(() => {
   return {
     error: 'bg-red-700 text-white font-bold uppercase',
     success: 'bg-green-700 text-white font-bold uppercase',
-    info: 'bg-slate-700 text-white font-bold uppercase'
+    info: 'bg-slate-700 text-white font-bold uppercase',
   }[type.value]
 })
 </script>
@@ -25,8 +25,6 @@ const toastClass = computed(() => {
     </div>
   </transition>
 </template>
-
-
 
 <style>
 .fade-enter-active,

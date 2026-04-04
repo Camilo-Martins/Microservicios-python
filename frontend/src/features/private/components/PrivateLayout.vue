@@ -1,6 +1,6 @@
 <script setup>
-import PublicFooter from '@/components/layout/PublicFooter.vue';
-import PrivateNav from './PrivateNav.vue';
+import PublicFooter from '@/components/layout/PublicFooter.vue'
+import PrivateNav from './PrivateNav.vue'
 </script>
 
 <template>

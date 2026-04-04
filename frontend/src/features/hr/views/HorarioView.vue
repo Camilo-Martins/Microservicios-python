@@ -8,8 +8,6 @@ let horarioData = ref({})
 
 const {
   sendData: getHorario,
-  loading: loadingHorario,
-  error: errorHorario,
   data: dataHorario,
 } = useGetHorario()
 

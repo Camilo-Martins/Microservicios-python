@@ -3,7 +3,7 @@ import { Form, Field } from 'vee-validate'
 import { ref, onMounted } from 'vue'
 import useToast from '@/stores/useToast'
 import BaseButton from '@/components/BaseButton.vue'
-import { useGetNota, useAddNota, useEditNota } from '@/features/notas/composables'
+import { useGetNota, useAddNota, useEditNota } from '@/features/notas/composables/composables'
 const { trigger } = useToast()
 
 const { sendData, data, loading, error } = useGetNota()
