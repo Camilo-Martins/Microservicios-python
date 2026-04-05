@@ -83,7 +83,7 @@ const submit = async () => {
     observaciones.value = ''
     getNota()
   } catch (error) {
-    trigger(error)
+    trigger("Error al agregar nota")
   }
 }
 
@@ -195,7 +195,7 @@ onMounted(() => {
                 ? 'px-3 py-1 text-sm rounded bg-green-100 text-green-700 hover:bg-green-200'
                 : 'px-3 py-1 text-sm rounded bg-red-100 text-red-700 hover:bg-red-200'
                 ">
-                {{ nota.is_active ? 'Activo' : 'Inactivo' }}
+                {{ nota.is_active ? 'Realizada' : 'Pendiente' }}
               </button>
             </td>
           </tr>

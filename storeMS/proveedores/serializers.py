@@ -36,6 +36,9 @@ class NewProveedorSerializer(serializers.Serializer):
     nombre_completo = serializers.CharField(
         required=False,
         allow_blank=False,
+        error_messages={ 'required': 'El nombre del Representante es requerido.',
+            'blank': 'El nombre del Representante no puede estar vacío.',
+        },
         max_length=100,
         validators=[
             RegexValidator(
@@ -49,6 +52,10 @@ class NewProveedorSerializer(serializers.Serializer):
         required=True,
         allow_blank=False,
         max_length=20,
+        error_messages={
+            'required': 'El teléfono es obligatorio.',
+            'blank': 'El teléfono no puede estar vacío.',
+        },
         validators=[
             RegexValidator(
                 regex=r'^\+?\d{7,15}$',
@@ -83,6 +90,10 @@ class NewProveedorSerializer(serializers.Serializer):
         required=True,
         allow_blank=False,
         max_length=100,
+        error_messages={
+            'required': 'El nombre de la empresa es requerido.',
+            'blank': 'El nombre de la empresa no puede estar vacío.',
+        },
         validators=[
             RegexValidator(
                 regex=r'^[A-Za-z0-9 ]+$',
@@ -200,7 +211,7 @@ class EditProveedorSerializer(serializers.Serializer):
 
     direccion = serializers.CharField(
         required=False,
-        allow_blank=False,
+        allow_blank=True,
         max_length=100,
         validators=[
             RegexValidator(
@@ -212,7 +223,7 @@ class EditProveedorSerializer(serializers.Serializer):
 
     observaciones = serializers.CharField(
         required=False,
-        allow_blank=False,
+        allow_blank=True,
         max_length=100,
         validators=[
             RegexValidator(
