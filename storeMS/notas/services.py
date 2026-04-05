@@ -16,7 +16,7 @@ class NotasService:
 class NewNotaService:
     @staticmethod
     @transaction.atomic
-    def crear_nota(*,admin_id, nombre_nota, observaciones):
+    def crear_nota(*,admin_id, nombre_nota, observaciones=None):
 
         nota = Nota.objects.create(
             nombre_nota=nombre_nota,

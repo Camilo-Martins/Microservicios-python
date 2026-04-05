@@ -38,8 +38,8 @@ class NewNotaSerializer(serializers.Serializer):
     )
 
     observaciones = serializers.CharField(
-        required=True,
-        allow_blank=False,
+        required=False,
+        allow_blank=True,
         max_length=100,
         validators=[
             RegexValidator(
@@ -66,7 +66,7 @@ class EditNotaSerializer(serializers.Serializer):
 
     observaciones = serializers.CharField(
         required=False,
-        allow_blank=False,
+        allow_blank=True,
         max_length=100,
         validators=[
             RegexValidator(

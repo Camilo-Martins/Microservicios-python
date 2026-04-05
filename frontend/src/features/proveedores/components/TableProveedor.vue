@@ -2,6 +2,10 @@
 import { computed, ref } from 'vue'
 import { useEditProveedor } from '../composables/composables'
 import useToast from '@/stores/useToast'
+import { useRouter, useRoute } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
 
 const props = defineProps({
   proveedoreslist: {
@@ -16,6 +20,7 @@ const editing = ref({
   value: '',
 })
 
+let showHelp = ref(false)
 const emit = defineEmits(['updatedProveedor'])
 const { trigger } = useToast()
 const { sendData } = useEditProveedor()
@@ -81,6 +86,7 @@ const toggleEstado = async (proveedor) => {
 </script>
 
 <template>
+    
   <div class="max-h-96 overflow-y-auto rounded-xl shadow-sm border border-slate-200">
     <table
       class="min-w-full border-collapse text-sm overflow-y-auto bg-white rounded-xl shadow-sm border border-slate-200">
@@ -98,7 +104,7 @@ const toggleEstado = async (proveedor) => {
       </thead>
 
       <tbody>
-        <tr v-for="proveedor in proveedoreslist" :key="proveedor.id" class="border-t hover:bg-slate-50 transition"
+        <tr v-for="proveedor in proveedoreslist" :key="proveedor.id" class="border-t hover:bg-slate-50 transition cursor-pointer hover:bg-slate-200" title="Haz doble clic para editar"
           :class="[
             editing.id === proveedor.id ? 'bg-blue-100 ring-1 ring-blue-400' : 'hover:bg-slate-200',
           ]">
@@ -180,10 +186,11 @@ const toggleEstado = async (proveedor) => {
           </td>
 
           <!-- Productos -->
-          <td class="px-4 py-3 text-center truncate max-w-xs" colspan="1">
-            <span>
-              {{ proveedor.id ? proveedor.id : 'No definido' }}
-            </span>
+          <td class="px-4 py-3 text-center" colspan="1">
+             <RouterLink to="/panel/productos" class="px-3 py-1 text-sm rounded bg-green-100 text-green-700 hover:bg-green-200"
+        >
+          +
+        </RouterLink>
           </td>
         </tr>
       </tbody>

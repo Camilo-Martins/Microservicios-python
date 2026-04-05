@@ -255,3 +255,20 @@ class EditProveedorSerializer(serializers.Serializer):
         if Proveedor.objects.filter(admin_id=admin_id, email=value).exists():
             raise serializers.ValidationError("El correo electrónico ingresado ya existe.")
         return value
+    
+class ProveedoresListBoxSerializer(serializers.Serializer):
+
+    admin_id = serializers.CharField(
+        required=True,
+        allow_blank=False,
+    )
+
+    id = serializers.CharField(required=False, allow_blank=True)
+    nombre_empresa = serializers.CharField(required=False, allow_blank=True)
+    is_active = serializers.BooleanField(required=False)
+    telefono = serializers.CharField(required=False, allow_blank=True)          
+    email = serializers.EmailField(required=False, allow_blank=True)
+
+    class Meta:
+        model = Proveedor
+        fields = ("id", "admin_id", "nombre_empresa", "is_active", "telefono", "email")

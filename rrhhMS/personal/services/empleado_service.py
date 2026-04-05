@@ -75,7 +75,7 @@ class PersonalListService:
     @transaction.atomic
     def obtener_empleados_por_admin(*, admin_id):
         
-        personalList = Empleado.objects.filter(admin_id=admin_id).order_by("id")
+        personalList = Empleado.objects.filter(admin_id=admin_id).order_by("id", '-is_active')
         return personalList
   
 
@@ -84,7 +84,7 @@ class PersonalActiveListService:
     @transaction.atomic
     def obtener_empleados_por_admin(*, admin_id):
         
-        personalList = Empleado.objects.filter(admin_id=admin_id, is_active=True ).order_by("id")
+        personalList = Empleado.objects.filter(admin_id=admin_id, is_active=True ).order_by("id", '-is_active')
         return personalList
   
 

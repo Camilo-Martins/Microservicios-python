@@ -12,6 +12,11 @@ class ProveedoresService:
         proveedoresList = Proveedor.objects.filter(admin_id=admin_id).order_by("-id", "-is_active")
         return proveedoresList
     
+    def obtener_proveedores_por_admin_cbox(*, admin_id):
+        proveedoresList = Proveedor.objects.filter(admin_id=admin_id).order_by("-id", "-is_active")
+        return proveedoresList
+
+
 class NewProveedorService:
     @staticmethod
     @transaction.atomic

@@ -119,13 +119,7 @@ const onPagarEmpleado = async (personal) => {
                 <span class="text-slate-700">
                   {{ asig.empleado.nombre_completo }}
                 </span>
-                <button
-                  class="text-green-600 hover:text-green-800 font-bold transition"
-                  @click="onPagarEmpleado(asig?.empleado?.telefono)"
-                  placeholder="Notificar pago"
-                >
-                  $
-                </button>
+              
                 <button
                   class="text-red-600 hover:text-red-800 font-bold transition"
                   @click="onEliminarEmpleado(dia.id, asig?.empleado?.id)"

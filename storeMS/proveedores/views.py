@@ -29,7 +29,28 @@ class ObtenerProveedores(APIView):
         datos_json = ObtenerProveedoresSerializer(proveedoresLists, many=True)
 
         return JsonResponse({"data": datos_json.data})
-    
+
+
+class ObtenerProveedoresListBox(APIView):
+    @logueado()
+ 
+    def get(self, request):
+        try:
+            admin_id = get_admin_id_from_request(request)
+        except Exception:
+            return JsonResponse({"estado": "error", "msg": "Ha ocurrido un error"}, status=500)
+        
+        serializer = ProveedoresListBoxSerializer(data={"admin_id":admin_id})
+        serializer.is_valid(raise_exception=True)
+
+        proveedoresLists = ProveedoresService.obtener_proveedores_por_admin_cbox(
+            **serializer.validated_data
+        )
+
+        datos_json = ProveedoresListBoxSerializer(proveedoresLists, many=True)
+
+        return JsonResponse({"data": datos_json.data})
+
 class AgregarProveedor(APIView):
     @logueado()
 

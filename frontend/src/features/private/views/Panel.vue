@@ -4,6 +4,7 @@ import { ref, onMounted } from 'vue'
 import useToast from '@/stores/useToast'
 import BaseButton from '@/components/BaseButton.vue'
 import { useGetNota, useAddNota, useEditNota } from '@/features/notas/composables/composables'
+
 const { trigger } = useToast()
 
 const { sendData, data, loading, error } = useGetNota()
@@ -12,6 +13,7 @@ const editing = ref({
   field: null,
   value: '',
 })
+
 const {
   sendData: sendAddNota,
 
@@ -25,6 +27,7 @@ const {
 let notasList = ref({})
 let nombre_nota = ref('')
 let observaciones = ref('')
+let showHelp = ref(false)
 
 const getNota = async () => {
   await sendData()
@@ -83,7 +86,7 @@ const submit = async () => {
     observaciones.value = ''
     getNota()
   } catch (error) {
-    trigger("Error al agregar nota")
+    trigger("Debe ingresar un nombre para la nota.")
   }
 }
 
@@ -125,7 +128,7 @@ onMounted(() => {
             <div class="form-field md:col-span-2">
               <div class="pb-3"><label class="form.label">Nombre</label>:</div>
 
-              <Field type="text" name="nombre_nota" class="form-input" v-model="nombre_nota"
+              <Field type="text" name="nombre_nota" class="form-input" v-model="nombre_nota" 
                 placeholder="Ej: Llamar a María" />
             </div>
 
@@ -144,30 +147,23 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Info -->
-    <span class="text-blue-800 px-5 font-medium bg-blue-200 rounded-xl shadow-sm border border-blue-800 py-2 my-5">
-      Puede editar una nota haciendo clic sobre cualquier fila de la tabla!</span>
-    <br />
-    <br />
-    <!-- Tabla de Notas -->
-
     <div class="max-h-96 overflow-y-auto bg-white rounded-xl shadow-sm border border-slate-200">
       <table
         class="min-w-full border-collapse text-sm overflow-y-auto bg-white rounded-xl shadow-sm border border-slate-200">
         <thead class="bg-slate-100 text-slate-600">
           <tr>
-            <th class="px-4 py-3 text-left" colspan="2">Nombre</th>
-            <th class="px-4 py-3 text-center" colspan="8">Detalle</th>
-            <th class="px-4 py-3 text-center" colspan="2">Estado</th>
+            <th class="px-4 py-3 text-left" colspan="1">Nombre</th>
+            <th class="px-4 py-3 text-left" colspan="11">Detalle</th>
+            <th class="px-4 py-3 text-center" colspan="1">Estado</th>
           </tr>
         </thead>
 
         <tbody>
-          <tr v-for="nota in notasList" :key="nota.id" class="border-t hover:bg-slate-200" :class="[
+          <tr v-for="nota in notasList" :key="nota.id" class="border-t hover:bg-slate-200"  title="Haz doble clic para editar" :class="[
             editing.id === nota.id ? 'bg-blue-100 ring-1 ring-blue-400' : 'hover:bg-slate-200',
           ]">
             <!-- NOMBRE -->
-            <td class="px-4 py-3 text-left truncate max-w-xs" colspan="2 ">
+            <td class="px-4 py-3 text-left truncate max-w-xs" colspan="1">
               <input v-if="editing.id === nota.id && editing.field === 'nombre_nota'" v-model="editing.value"
                 type="text" class="w-full rounded border border-slate-300 px-2 py-1" @blur="saveEdit(nota)"
                 @keyup.enter="saveEdit(nota)" @keyup.esc="cancelEdit" />
@@ -178,14 +174,14 @@ onMounted(() => {
             </td>
 
             <!-- OBSERVACIONES -->
-            <td class="px-4 py-3 text-left truncate max-w-xs" colspan="8">
+            <td class="px-4 py-3 text-left truncate max-w-xs" colspan="10">
               <textarea v-if="editing.id === nota.id && editing.field === 'observaciones'" v-model="editing.value"
                 rows="3" class="w-full rounded border border-slate-300 px-2 py-1 resize-none" @blur="saveEdit(nota)"
                 @keyup.esc="cancelEdit"></textarea>
 
               <span v-else class="block w-full cursor-pointer whitespace-pre-line"
                 @click="startEdit(nota, 'observaciones')">
-                {{ nota.observaciones }}
+                {{ nota.observaciones ? nota.observaciones : 'Sin detalles' }}
               </span>
             </td>
 
