@@ -35,7 +35,7 @@ const emit = defineEmits(['toggle-status', 'select', 'persona-data'])
         <tr v-for="persona in items" :key="persona.id" class="border-t hover:bg-slate-200">
           <td class="px-4 py-3 text-left">{{ persona.nombre_completo }}</td>
           <td class="px-4 py-3 text-center">{{ persona.rut }}</td>
-          <td class="px-4 py-3 text-center">{{ persona.pago_diario? persona.pago_diario : 0 }}</td>
+          <td class="px-4 py-3 text-center">${{ persona.pago_diario? persona.pago_diario : 0 }}</td>
           <td class="px-4 py-3 text-center">
             <button
               @click="emit('toggle-status', persona.id)"
@@ -65,7 +65,7 @@ const emit = defineEmits(['toggle-status', 'select', 'persona-data'])
               :href="`/panel/persona/${persona.id}`"
               class="text-blue-600 hover:underline font-medium"
             >
-              VER
+              Editar
             </a>
           </td>
         </tr>

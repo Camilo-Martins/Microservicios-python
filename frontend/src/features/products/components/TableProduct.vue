@@ -1,7 +1,7 @@
 <script setup>
-import { useGetProveedorLista } from '@/features/proveedores/composables/composables'
-import { Form, Field, ErrorMessage } from 'vee-validate'
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
+import useToast from '@/stores/useToast'
+import { useEditProducto } from '../composables/composables'
 
 const props = defineProps({
     productoslist: {
@@ -13,10 +13,60 @@ const props = defineProps({
         required: true,
     },
 })
-const emit = defineEmits(['filters-change'])
 
+const categorias = ['Alimentos', 'Bebidas', 'Limpieza', 'Higiene']
+const { trigger } = useToast()
+const emit = defineEmits(['filters-change', 'updatedProducto'])
+const { sendData } = useEditProducto()
+const editing = ref({
+    id: null,
+    field: null,
+    value: '',
+})
 const categoriaSeleccionada = ref('')
 const proveedorSeleccionado = ref('')
+
+const startEdit = (proveedor, field) => {
+    editing.value.id = proveedor.id
+    editing.value.field = field
+    editing.value.value = proveedor[field] ?? ''
+}
+
+const cancelEdit = () => {
+    editing.value.id = null
+    editing.value.field = null
+    editing.value.value = ''
+}
+
+const saveEdit = async (producto) => {
+    const { field, value } = editing.value
+
+    if (!field) return
+
+    if (value === producto[field]) {
+        cancelEdit()
+        return
+    }
+
+    const confirmed = window.confirm('¿Guardar cambios?')
+    if (!confirmed) {
+        cancelEdit()
+        return
+    }
+
+    try {
+        await sendData(producto.id, {
+            [field]: value,
+        })
+
+        emit('updatedProducto')
+        producto[field] = value
+    } catch (error) {
+        trigger('Error al actualizar el producto', 'error')
+    } finally {
+        cancelEdit()
+    }
+}
 
 watch([categoriaSeleccionada, proveedorSeleccionado], () => {
     emit('filters-change', {
@@ -27,54 +77,44 @@ watch([categoriaSeleccionada, proveedorSeleccionado], () => {
 </script>
 
 <template>
-   <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm max-w-3xl">
-    <h3 class="text-sm font-semibold text-slate-600 mb-3">Filtros</h3>
+    <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm max-w-3xl">
+        <h3 class="text-sm font-semibold text-slate-600 mb-3">Filtros</h3>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl">
-        <!-- Categoría -->
-        <div>
-            <label class="block text-xs text-slate-500 mb-1">
-                Categoría
-            </label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl">
+        
+            <!-- Categoría -->
+            <div>
+                <label class="block text-xs text-slate-500 mb-1"> Categoría </label>
 
-            <select
-                v-model="categoriaSeleccionada"
-                class="w-full max-w-xs rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:ring-1 focus:ring-slate-400"
-            >
-                <option value="">Todas</option>
-                <option value="Alimentos">Alimentos</option>
-                <option value="Bebidas">Bebidas</option>
-                <option value="Limpieza">Limpieza</option>
-                <option value="Higiene Personal">Higiene Personal</option>
-            </select>
-        </div>
+                <select v-model="categoriaSeleccionada"
+                    class="w-full max-w-xs rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:ring-1 focus:ring-slate-400">
+                    <option value="">Todas</option>
+                    <option value="Alimentos">No definido</option>
+                    <option value="Alimentos">Alimentos</option>
+                    <option value="Bebidas">Bebidas</option>
+                    <option value="Limpieza">Limpieza</option>
+                    <option value="Higiene Personal">Higiene Personal</option>
+                </select>
+            </div>
 
-        <!-- Proveedor -->
-        <div>
-            <label class="block text-xs text-slate-500 mb-1">
-                Proveedor
-            </label>
+            <!-- Proveedor -->
+            <div>
+                <label class="block text-xs text-slate-500 mb-1"> Proveedor </label>
 
-            <select
-                v-model="proveedorSeleccionado"
-                class="w-full max-w-xs rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:ring-1 focus:ring-slate-400"
-            >
-                <option value="">Todos</option>
-                <option
-                    v-for="proveedor in proveedores"
-                    :key="proveedor.id"
-                    :value="proveedor.nombre_completo"
-                >
-                    {{ proveedor.nombre_completo }}
-                </option>
-            </select>
+                <select v-model="proveedorSeleccionado"
+                    class="w-full max-w-xs rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:ring-1 focus:ring-slate-400">
+                    <option value="">Todos</option>
+                    <option v-for="proveedor in proveedores" :key="proveedor.id" :value="proveedor.nombre_completo">
+                        {{ proveedor.nombre_completo }}
+                    </option>
+                </select>
+            </div>
         </div>
     </div>
-</div>
 
     <br />
 
-    <div class="max-h-96 overflow-y-auto rounded-xl shadow-sm border border-slate-200">
+    <div class="max-h-54 overflow-y-auto rounded-xl shadow-sm border border-slate-200">
         <table
             class="min-w-full border-collapse text-sm overflow-y-auto bg-white rounded-xl shadow-sm border border-slate-200">
             <thead class="bg-slate-100 text-slate-600">
@@ -94,34 +134,77 @@ watch([categoriaSeleccionada, proveedorSeleccionado], () => {
                     title="Haz doble clic para editar">
                     <!-- Nombre -->
                     <td class="px-4 py-3 text-left truncate max-w-xs" colspan="1">
-                        <span>
+                        <input v-if="editing.id === productos.id && editing.field === 'nombre_producto'"
+                            v-model="editing.value" type="text" class="w-full rounded border border-slate-300 px-2 py-1"
+                            @blur="saveEdit(productos)" @keyup.enter="saveEdit(productos)" @keyup.esc="cancelEdit" />
+                        <span v-else class="block w-full cursor-pointer"
+                            @click="startEdit(productos, 'nombre_producto')">
                             {{ productos.nombre_producto ? productos.nombre_producto : 'No definido' }}
                         </span>
                     </td>
 
                     <!-- Descripcion -->
                     <td class="px-4 py-3 text-left truncate max-w-xs" colspan="1">
-                        <span>{{ productos.descripcion ? productos.descripcion : 'No definido' }}</span>
+                        <input v-if="editing.id === productos.id && editing.field === 'descripcion'"
+                            v-model="editing.value" type="text" class="w-full rounded border border-slate-300 px-2 py-1"
+                            @blur="saveEdit(productos)" @keyup.enter="saveEdit(productos)" @keyup.esc="cancelEdit" />
+                        <span v-else class="block w-full cursor-pointer" @click="startEdit(productos, 'descripcion')">
+                            {{ productos.descripcion ? productos.descripcion : 'No definido' }}
+                        </span>
                     </td>
 
                     <!-- Precio -->
                     <td class="px-4 py-3 text-center truncate max-w-xs" colspan="1">
-                        <span>${{ productos.precio ? productos.precio : '0.00' }}</span>
+                        <input v-if="editing.id === productos.id && editing.field === 'precio'" v-model="editing.value"
+                            type="text" class="w-full rounded border border-slate-300 px-2 py-1"
+                            @blur="saveEdit(productos)" @keyup.enter="saveEdit(productos)" @keyup.esc="cancelEdit" />
+                        <span v-else class="block w-full cursor-pointer" @click="startEdit(productos, 'precio')">
+                            {{ productos.precio ? productos.precio : '0.00' }}
+                        </span>
                     </td>
 
-                    <!-- Categoría -->
+                    <!-- Categoria-->
                     <td class="px-4 py-3 text-center truncate max-w-xs" colspan="1">
-                        <span>{{ productos.categoria ? productos.categoria : 'No definido' }}</span>
+                        <select v-if="editing.id === productos.id && editing.field === 'categoria'"
+                            v-model="editing.value" class="w-full rounded border border-slate-300 px-2 py-1"
+                            @change="saveEdit(productos)" @keyup.esc="cancelEdit">
+                            <option value="" disabled>Seleccione</option>
+                            <option v-for="categoria in categorias" :key="categoria" :value="categoria">
+                                {{ categoria }}
+                            </option>
+                        </select>
+
+                        <span v-else class="block w-full cursor-pointer" @click="startEdit(productos, 'categoria')">
+                            {{ productos.categoria || 'No definido' }}
+                        </span>
                     </td>
 
                     <!-- Proveedor -->
                     <td class="px-4 py-3 text-center truncate max-w-xs" colspan="1">
-                        <span>{{ productos.proveedor ? productos.proveedor : 'No definido' }}</span>
+                        <select v-if="editing.id === productos.id && editing.field === 'proveedor'"
+                            v-model="editing.value" class="w-full rounded border border-slate-300 px-2 py-1"
+                            @change="saveEdit(productos)" @keyup.esc="cancelEdit">
+                            <option value="" disabled>Seleccione proveedor</option>
+                            <option v-for="proveedor in proveedores" :key="proveedor.id"
+                                :value="proveedor.nombre_completo">
+                                {{ proveedor.nombre_completo }}
+                            </option>
+                        </select>
+
+                        <span v-else class="block w-full cursor-pointer" @click="startEdit(productos, 'proveedor')">
+                            {{ productos.proveedor || 'No definido' }}
+                        </span>
                     </td>
 
-                    <!-- Stock -->
-                    <td class="px-4 py-3 text-center truncate max-w-xs" colspan="6">
-                        <span>{{ productos.stock ? productos.stock : '0' }}</span>
+                    <!-- Proveedor -->
+                    <td class="px-4 py-3 text-center truncate max-w-xs" colspan="1">
+                        <input v-if="editing.id === productos.id && editing.field === 'stock_actual'"
+                            v-model="editing.value" type="number"
+                            class="w-full rounded border border-slate-300 px-2 py-1" @blur="saveEdit(productos)"
+                            @keyup.enter="saveEdit(productos)" @keyup.esc="cancelEdit" />
+                        <span v-else class="block w-full cursor-pointer" @click="startEdit(productos, 'stock_actual')">
+                            {{ productos.stock_actual ? productos.stock_actual : '0' }}
+                        </span>
                     </td>
 
                     <!-- Productos -->

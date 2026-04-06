@@ -1,22 +1,14 @@
 <script setup>
-import { Form, Field } from 'vee-validate'
-import { ref } from 'vue'
+import { Form, Field, ErrorMessage } from 'vee-validate'
 import { useAddPersonal } from '../composables/useAddPersonal'
 import BaseButton from '@/components/BaseButton.vue'
 
 import useToast from '@/stores/useToast'
 import { useAddHorario } from '../composables/useHorario'
-
+import { personalSchema } from '../schemas/personalSchema'
 const { trigger } = useToast()
 
 const { sendData } = useAddPersonal()
-
-let rol = ref('')
-let nombre_completo = ref('')
-let telefono = ref('')
-let medio_pago = ref('')
-let pago_diario = ref('')
-let rut = ref('')
 
 const emit = defineEmits(['created', 'generated'])
 const { sendData: sendHorario, error: errorHorario, data } = useAddHorario()
@@ -32,17 +24,18 @@ const submitHorario = async () => {
   }
 }
 
-const submit = async () => {
+const submit = async (values, { resetForm }) => {
   try {
     await sendData({
-      nombre_completo: nombre_completo.value,
-      telefono: telefono.value,
-      rut: rut.value,
-      rol: rol.value,
-      pago_diario: pago_diario.value,
-      medio_pago: medio_pago.value,
+      nombre_completo: values.nombre_completo,
+      telefono: values.telefono,
+      rut: values.rut,
+      rol: values.rol,
+      pago_diario: values.pago_diario,
+      medio_pago: values.medio_pago,
     })
 
+    resetForm()
     emit('created')
   } catch (error) {
     trigger(error)
@@ -53,7 +46,8 @@ const submit = async () => {
 <template>
   <!-- Formulario -->
   <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-8">
-    <Form @submit="submit()" class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
+    <Form :validation-schema="personalSchema" @submit="submit" 
+    class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
       <div class="form-field">
         <div class="pb-3"><label class="form.label">Nombre</label>:</div>
 
@@ -61,7 +55,7 @@ const submit = async () => {
           type="text"
           name="nombre_completo"
           class="form-input"
-          v-model="nombre_completo"
+         
           placeholder="Ej: Camilo Álvarez"
         />
       </div>
@@ -75,7 +69,7 @@ const submit = async () => {
           type="text"
           name="rut"
           class="form-input"
-          v-model="rut"
+         
           placeholder="Ej:12345678-9"
         />
       </div>
@@ -89,7 +83,7 @@ const submit = async () => {
           type="text"
           name="telefono"
           class="form-input"
-          v-model="telefono"
+         
           placeholder="56912345678"
         />
       </div>
@@ -102,7 +96,7 @@ const submit = async () => {
           type="text"
           name="pago_diario"
           class="form-input"
-          v-model="pago_diario"
+        
           placeholder="Ej: $20.000"
         />
       </div>
@@ -116,7 +110,15 @@ const submit = async () => {
       >
         Generar Horario
       </BaseButton>
+        <div class="form-field col-span-12">
+       <ErrorMessage name="nombre_completo" class="text-red-600 col-span-6 italic" />
+         <ErrorMessage name="rut" class="text-red-600 col-span-6 italic" />
+           <ErrorMessage name="telefono" class="text-red-600 col-span-6 italic" />
+             <ErrorMessage name="pago_diario" class="text-red-600 col-span-6 italic" />
+      </div>
     </Form>
+    
+        
   </div>
 </template>
 

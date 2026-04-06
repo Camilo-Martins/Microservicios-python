@@ -50,7 +50,7 @@ class NewProductoSerializer(serializers.Serializer):
     )
 
     precio = serializers.DecimalField(
-        required=True,
+        required=False,
         max_digits=10,
         decimal_places=2,
         error_messages={
@@ -80,7 +80,7 @@ class NewProductoSerializer(serializers.Serializer):
     )
 
     proveedor_id = serializers.IntegerField(
-        required=True,
+        required=False,
         error_messages={
             'required': 'El proveedor es obligatorio.',
             'invalid': 'Ingrese un ID de proveedor válido.',
@@ -111,7 +111,7 @@ class NewProductoSerializer(serializers.Serializer):
 class EditarProductoSerializer(NewProductoSerializer):
     
     nombre_producto = serializers.CharField(
-        required=True,
+        required=False,
         allow_blank=False,
         error_messages={
             'required': 'El nombre del producto es requerido.',
@@ -133,7 +133,7 @@ class EditarProductoSerializer(NewProductoSerializer):
     )
 
     precio = serializers.DecimalField(
-        required=True,
+        required=False,
         max_digits=10,
         decimal_places=2,
         error_messages={
@@ -163,7 +163,7 @@ class EditarProductoSerializer(NewProductoSerializer):
     )
 
     proveedor_id = serializers.IntegerField(
-        required=True,
+        required=False,
         error_messages={
             'required': 'El proveedor es obligatorio.',
             'invalid': 'Ingrese un ID de proveedor válido.',

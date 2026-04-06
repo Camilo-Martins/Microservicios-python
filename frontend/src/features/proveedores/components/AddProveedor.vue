@@ -32,11 +32,13 @@ const submit = async (values, { resetForm }) => {
 <template>
   <!-- Formulario -->
   <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-8">
-    <Form :validation-schema="proveedorSchema" @submit="submit" class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
+    <Form :validation-schema="proveedorSchema" @submit="submit" 
+    class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
       <div class="form-field col-span-12">
         <div class="pb-3"><label class="form.label">Representante:</label></div>
 
-        <Field type="text" name="nombre_completo" class="form-input" placeholder="Ej: Camilo Álvarez" />
+        <Field type="text" name="nombre_completo" 
+        class="form-input" placeholder="Ej: Camilo Álvarez" />
       </div>
 
       <div class="form-field col-span-8">

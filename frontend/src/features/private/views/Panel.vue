@@ -14,15 +14,9 @@ const editing = ref({
   value: '',
 })
 
-const {
-  sendData: sendAddNota,
+const { sendData: sendAddNota } = useAddNota()
 
-} = useAddNota()
-
-const {
-  sendData: sendEditNota,
-
-} = useEditNota()
+const { sendData: sendEditNota } = useEditNota()
 
 let notasList = ref({})
 let nombre_nota = ref('')
@@ -86,7 +80,7 @@ const submit = async () => {
     observaciones.value = ''
     getNota()
   } catch (error) {
-    trigger("Debe ingresar un nombre para la nota.")
+    trigger("Debe ingresar un nombre para la nota")
   }
 }
 
@@ -128,7 +122,7 @@ onMounted(() => {
             <div class="form-field md:col-span-2">
               <div class="pb-3"><label class="form.label">Nombre</label>:</div>
 
-              <Field type="text" name="nombre_nota" class="form-input" v-model="nombre_nota" 
+              <Field type="text" name="nombre_nota" class="form-input" v-model="nombre_nota"
                 placeholder="Ej: Llamar a María" />
             </div>
 
@@ -159,9 +153,10 @@ onMounted(() => {
         </thead>
 
         <tbody>
-          <tr v-for="nota in notasList" :key="nota.id" class="border-t hover:bg-slate-200"  title="Haz doble clic para editar" :class="[
-            editing.id === nota.id ? 'bg-blue-100 ring-1 ring-blue-400' : 'hover:bg-slate-200',
-          ]">
+          <tr v-for="nota in notasList" :key="nota.id" class="border-t hover:bg-slate-200"
+            title="Haz doble clic para editar" :class="[
+              editing.id === nota.id ? 'bg-blue-100 ring-1 ring-blue-400' : 'hover:bg-slate-200',
+            ]">
             <!-- NOMBRE -->
             <td class="px-4 py-3 text-left truncate max-w-xs" colspan="1">
               <input v-if="editing.id === nota.id && editing.field === 'nombre_nota'" v-model="editing.value"
@@ -188,8 +183,8 @@ onMounted(() => {
             <!-- ESTADO -->
             <td class="px-4 py-3 text-center" colspan="2">
               <button @click="toggleEstado(nota)" :class="nota.is_active
-                ? 'px-3 py-1 text-sm rounded bg-green-100 text-green-700 hover:bg-green-200'
-                : 'px-3 py-1 text-sm rounded bg-red-100 text-red-700 hover:bg-red-200'
+                  ? 'px-3 py-1 text-sm rounded bg-green-100 text-green-700 hover:bg-green-200'
+                  : 'px-3 py-1 text-sm rounded bg-red-100 text-red-700 hover:bg-red-200'
                 ">
                 {{ nota.is_active ? 'Realizada' : 'Pendiente' }}
               </button>

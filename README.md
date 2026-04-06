@@ -1,208 +1,79 @@
-# 🏪 Sistema de Gestión de Personal y Productos para pequeñas y medianas tiendas
+# 📦 Sistema de Gestión de Tienda
 
-Proyecto de portafolio enfocado en el diseño y construcción de un **sistema backend realista**, pensado para la operación diaria de un **comercio pequeño (tienda de barrio)**.
+Este proyecto consiste en un sistema de gestión pensado para facilitar la administración básica de una tienda o negocio pequeño, priorizando la rapidez de uso, la claridad y la flexibilidad en la operación diaria.
 
-El objetivo del proyecto es demostrar **criterio técnico**, buenas prácticas y capacidad de **modelar un dominio real**, priorizando claridad arquitectónica por sobre complejidad innecesaria.
-
----
-
-## 🎯 Propósito del proyecto
-
-Este sistema está orientado a un **dueño o administrador de tienda**, que necesita gestionar la operación diaria de forma simple:
-
-- gestión de empleados
-- control básico de la información laboral
-- base para asistencia, pagos y horarios
-
-❌ No es un sistema corporativo  
-❌ No gestiona contratos, bonos ni liquidaciones  
-❌ No busca cubrir todos los casos legales
-❌ No busca cubrir todos los casos legales
-
-El foco está en **simplicidad, realismo y mantenibilidad**.
+El objetivo principal no es sobrecargar al usuario con configuraciones complejas, sino permitirle comenzar rápidamente con lo esencial y expandir el uso del sistema de forma progresiva.
 
 ---
 
-## 🎥 Video de presentación
+## 🎯 ¿Para quién está pensado?
 
-Visión general del proyecto, su arquitectura y estado actual:
+Este sistema está orientado a:
 
-👉 [https://www.youtube.com/watch?v=XS9vVooYrnY](https://www.youtube.com/playlist?list=PLjwPn04e8qT_PSVP_yixD_r7RtRX6NHX_)
+- Personas que gestionan pequeños negocios o tiendas
+- Usuarios que necesitan registrar información sin procesos complejos
+- Contextos donde la rapidez y simplicidad son más importantes que la sobreconfiguración
 
-## 🧱 Arquitectura general
-
-El proyecto está dividido en **microservicios independientes**, cada uno con una responsabilidad clara:
-
-````
-
-PYTHONMS/
-├── authMS/      # Autenticación de administradores (JWT)
-├── rrhhMS/      # Gestión operativa de empleados
-├── storeMS/     # Productos y stock (en desarrollo)
-├── frontend/    # Vue 3 (en desarrollo)
-└── docker-compose.yml
-
-- es una aplicación Django independiente
-- tiene su propia base de datos MySQL
-- se configura exclusivamente mediante variables de entorno
-- se comunica a través de la red interna de Docker Compose
+La idea es que cualquier usuario pueda comenzar a utilizar el sistema sin necesidad de conocimientos técnicos.
 
 ---
 
-## 🔐 Autenticación y modelo de acceso
+## ⚙️ Enfoque del sistema
 
-- Solo los **administradores/dueños** se autentican en el sistema
-- Autenticación basada en **JWT**
-- Los empleados **no son usuarios del sistema**
-- El acceso a los datos se controla por:
-  - identidad validada por token
-  - pertenencia de los recursos al admin autenticado
+El sistema fue diseñado bajo un principio claro:
 
----
+> **Permitir una gestión rápida con lo mínimo necesario, sin bloquear futuras extensiones**
 
-## ⚙️ Stack tecnológico
+Esto se traduce en:
 
-### Backend
-- Python 3
-- Django
-- Django REST Framework
-- MySQL
-
-### Frontend
-- Vue 3 (planeado)
-- Vite
-
-### Infraestructura
-- Docker
-- Docker Compose
+- Creación de registros con pocos campos obligatorios
+- Estructuras simples que no entorpecen el flujo de trabajo
+- Posibilidad de ir agregando información de forma progresiva
 
 ---
 
-## 🐳 Docker y contenedores
+## 🧩 Funcionalidades principales
 
-Principios aplicados:
+### 📋 Gestión de productos
 
-- Un microservicio = un contenedor
-- Una base de datos por microservicio
-- Bases de datos no expuestas al host
-- Variables de entorno externalizadas (`.env`)
-- Volúmenes para persistencia de datos
+- Registro de productos con información esencial
+- Asociación a categorías y proveedores
+- Visualización clara en formato de tabla
 
----
+### 🔍 Filtros dinámicos
 
-## 🔧 Configuración por variables de entorno
+- Búsqueda de productos por proveedor
+- Búsqueda por categoría
+- Combinación de filtros para facilitar la gestión
 
-Toda la configuración sensible se gestiona mediante un archivo `.env`.
+### 🏷️ Categorías predefinidas
 
-Ejemplo:
+- Uso de categorías ya definidas para evitar errores
+- Evita que el usuario tenga que crear estructuras innecesarias
+- Facilita la organización desde el inicio
 
-```env
-# AUTH SERVICE
-AUTH_DB_NAME=
-AUTH_DB_USER=
-AUTH_DB_PASSWORD=
-AUTH_DB_HOST=
-AUTH_DB_PORT=
+### 🤝 Gestión de proveedores
 
-# RRHH SERVICE
-HR_DB_NAME=
-HR_DB_USER=
-HR_DB_PASSWORD=
-HR_DB_HOST=
-HR_DB_PORT=
+- Registro de proveedores asociados a productos
+- Relación directa con la gestión del inventario
 
-SMTP_SERVER=
-SMTP_PORT=
-SMTP_USER=
-SMTP_PASSWORD=
-````
+### 👥 Gestión de personas
 
-El archivo `.env` **no se versiona**.
-Se incluye un `.env.example` como referencia.
+- Posibilidad de asignar y relacionar información con personas dentro del sistema
+
+### 📝 Gestión de notas
+
+- Sistema flexible para registrar información adicional
+- Permite adaptarse a distintos usos sin rigidizar el sistema
 
 ---
 
-## ▶️ Ejecución local
+## 🧠 Filosofía del proyecto
 
-### Requisitos
+Este sistema no busca ser una solución compleja desde el inicio, sino:
 
-- Docker
-- Docker Compose
+- Ser **útil desde el primer uso**
+- Reducir la fricción en la entrada de datos
+- Mantener un equilibrio entre simplicidad y funcionalidad
 
-### Levantar el sistema
-
-```bash
-docker-compose up --build
-```
-
-Ejemplo de accesos:
-
-- authMS: [http://localhost:8001](http://localhost:8001)
-- rrhhthMS: [http://localhost:8003](http://localhost:8003)
-- storethMS: [http://localhost:8004](http://localhost:8004) (proximamente)
-- frontend: [http://localhost:5173](http://localhost:5173) (proximamente)
-
----
-
-## 🧠 Decisiones de diseño destacadas
-
-- Separación clara entre autenticación y dominios de negocio
-- Empleados modelados como entidades operativas, no como usuarios
-- JWT como contrato entre servicios
-- Soft delete para mantener historial
-- Alcance acotado y defendible en entrevistas técnicas
-
----
-
-## 📌 Estado del proyecto
-
-🟢 **En desarrollo activo**
-
-### Funcionalidades actuales
-
-- CRUD completo de empleados
-- Endpoints protegidos por JWT
-- Acceso filtrado por dueño (multi-tenant)
-
-### Próximos pasos
-
-- Documentación de la API con Swagger
-- Registro de asistencia diaria
-- Registro de pagos diarios
-- Frontend básico en Vue
-- # Tests básicos por servicio
-
-* CRUD completo de empleados
-* Endpoints protegidos por JWT
-* Acceso filtrado por dueño (multi-tenant)
-
-### Próximos pasos
-
-- Documentación de la API con Swagger
-- Registro de asistencia diaria
-- Registro de pagos diarios
-- Frontend básico en Vue
-- Tests básicos por servicio
-
----
-
-## 👤 Autor
-
-**Camilo**
-Ingeniero Informático
-
-- https://www.linkedin.com/in/camilo-martins-oliva/
-
-Interés en:
-
-- arquitectura backend
-- Docker y microservicios
-- diseño de sistemas reales
-- proyectos de portafolio con criterio técnico
-
----
-
-## 📝 Nota
-
-Este proyecto es **open source** y fue construido con fines educativos y de portafolio.
-Se prioriza **claridad, decisiones conscientes y evolución incremental**, por sobre la acumulación de funcionalidades.
+La prioridad fue construir algo que funcione bien en escenarios reales, donde el tiempo y la claridad son factores clave.

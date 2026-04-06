@@ -35,7 +35,7 @@ class PersonalService:
 class NewPersonalService:
     @staticmethod
     @transaction.atomic
-    def crear_empleado(*,admin_id, nombre_completo, telefono, rol, rut, pago_diario, medio_pago):
+    def crear_empleado(*,admin_id, nombre_completo, telefono, rol="Seleccionar", rut=None, pago_diario=None, medio_pago="Seleccionar"):
 
         if not pago_diario or pago_diario == None:
             pago_diario = 0

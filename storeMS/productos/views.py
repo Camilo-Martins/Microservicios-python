@@ -60,7 +60,7 @@ class AgregarProducto(APIView):
 class EditarProducto(APIView):
     @logueado()
 
-    def put(self, request, producto_id):
+    def put(self, request, id):
 
         try:
             admin_id = get_admin_id_from_request(request)
@@ -73,7 +73,7 @@ class EditarProducto(APIView):
         producto = EditProductoService.editar_producto(
             **serializer.validated_data,
             admin_id=admin_id,
-            producto_id=producto_id
+            id=id
         )
 
         datos_json = EditarProductoSerializer(producto)

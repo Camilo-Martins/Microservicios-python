@@ -9,7 +9,7 @@ class NotasService:
     @transaction.atomic
 
     def obtener_notas_por_admin(*, admin_id):
-        notasList = Nota.objects.filter(admin_id=admin_id).order_by("-id", "-is_active")
+        notasList = Nota.objects.filter(admin_id=admin_id).order_by( "-is_active")
         return notasList
     
 

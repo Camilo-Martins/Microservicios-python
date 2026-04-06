@@ -29,24 +29,14 @@ class NewNotaSerializer(serializers.Serializer):
         required=True,
         allow_blank=False,
         max_length=100,
-        validators=[
-            RegexValidator(
-                regex=r'^[A-Za-z0-9 ]+$',
-                message="El nombre solo puede contener letras, números y espacios."
-            )
-        ]
+     
     )
 
     observaciones = serializers.CharField(
         required=False,
         allow_blank=True,
         max_length=100,
-        validators=[
-            RegexValidator(
-                regex=r'^[A-Za-z0-9 ]+$',
-                message="El nombre solo puede contener letras, números y espacios."
-            )
-        ]
+       
     )
 
 # Seralizer para editar una nota existente  
@@ -56,24 +46,14 @@ class EditNotaSerializer(serializers.Serializer):
         required=False,
         allow_blank=False,
         max_length=100,
-        validators=[
-            RegexValidator(
-                regex=r'^[A-Za-z0-9 ]+$',
-                message="El nombre solo puede contener letras, números y espacios."
-            )
-        ]
+       
     )
 
     observaciones = serializers.CharField(
         required=False,
         allow_blank=True,
         max_length=100,
-        validators=[
-            RegexValidator(
-                regex=r'^[A-Za-z0-9 ]+$',
-                message="El nombre solo puede contener letras, números y espacios."
-            )
-        ]
+       
     )
 
     is_active = serializers.BooleanField(required=False, allow_null=False)

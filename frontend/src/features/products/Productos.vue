@@ -66,10 +66,10 @@ onMounted(() => {
 
     
       <div>
-        <AddProduct :proveedores="proveedores" />
+        <AddProduct :proveedores="proveedores"  @addProduct="fetchProductos" />
       </div>
       <div>
-        <TableProduct :productoslist="productoslist" :proveedores="proveedores"   @filters-change="handleFiltersChange" />
+        <TableProduct :productoslist="productoslist" :proveedores="proveedores"   @filters-change="handleFiltersChange" @updatedProducto="fetchProductos" />
       </div>
       
     

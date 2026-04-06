@@ -2,20 +2,20 @@
 import { Form, Field } from 'vee-validate'
 import BaseButton from '@/components/BaseButton.vue'
 import { useAddProducto } from '../composables/composables'
-
+import useToast from '@/stores/useToast'
 
 const props = defineProps({
-  proveedores: {
-    type: Array,
-    required: true,
-  },
+    proveedores: {
+        type: Array,
+        required: true,
+    },
 })
-
-
-const { sendData: sendProducto,  } = useAddProducto()
+const { trigger } = useToast()
+const { sendData: sendProducto } = useAddProducto()
+const emit = defineEmits(['addProduct'])
 
 const submit = async (values, { resetForm }) => {
-     console.log(values)
+    console.log(values)
     try {
         await sendProducto({
             nombre_producto: values.nombre_producto,
@@ -23,26 +23,26 @@ const submit = async (values, { resetForm }) => {
             precio: values.precio,
             stock_actual: values.stock,
             categoria: values.categoria,
-            proveedor_id: values.proveedor
+            proveedor_id: values.proveedor,
         })
-       
+
+        emit('addProduct')
         resetForm()
     } catch (error) {
-        console.log(error)
+        console.log( error)
+       trigger('Ingrese nombre para agregar el producto', 'error')
     }
 }
-
 </script>
 
 <template>
     <!-- Formulario -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-8">
-        <Form @submit="submit" class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end" >
+        <Form @submit="submit" class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
             <div class="form-field">
                 <div class="pb-3"><label class="form.label">Nombre Producto</label>:</div>
 
-                <Field type="text" name="nombre_producto" class="form-input" 
-                    placeholder="Ej: Arroz Grano Largo" />
+                <Field type="text" name="nombre_producto" class="form-input" placeholder="Ej: Arroz Grano Largo" />
             </div>
 
             <div class="form-field">
@@ -50,7 +50,7 @@ const submit = async (values, { resetForm }) => {
                     <label class="form.label">Descripción:</label>
                 </div>
 
-                <Field type="text" name="descripcion" class="form-input" 
+                <Field type="text" name="descripcion" class="form-input"
                     placeholder="Ej: Arroz de grano largo de calidad superior" />
             </div>
 
@@ -97,6 +97,7 @@ const submit = async (values, { resetForm }) => {
             </div>
 
             <BaseButton label="Agregar Personal" type="submit"> Agregar </BaseButton>
+            <span>!!</span>
         </Form>
     </div>
 </template>

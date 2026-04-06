@@ -39,7 +39,7 @@ class NewPersonalSerializer(serializers.Serializer):
     telefono = serializers.CharField(
         required=True,
         allow_blank=False,
-        min_length=11,
+        min_length=8,
         max_length=11,
         validators=[
         RegexValidator(
@@ -51,17 +51,18 @@ class NewPersonalSerializer(serializers.Serializer):
     medio_pago = serializers.CharField(required=False, allow_blank=True)
     pago_diario = serializers.CharField(required=False,  allow_blank=True)
     rut = serializers.CharField(
-        required=True,
-        allow_blank=False,
-        max_length=13,
+        required=False,
+        allow_blank=True,
+        max_length=12,
     )
 	
     def validate_rut(self, value):
         admin_id = self.context.get("admin_id")
-        if Empleado.objects.filter( rut=value, admin_id=admin_id).exists():
-            #admin_id=admin_id,
-            raise serializers.ValidationError("")
-        return value
+        if value is not None and value != "":
+            if Empleado.objects.filter( rut=value, admin_id=admin_id).exists():
+                #admin_id=admin_id,
+                raise serializers.ValidationError("")
+            return value
 
 
     def validate_telefono(self, value):

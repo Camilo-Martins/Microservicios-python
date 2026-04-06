@@ -60,20 +60,12 @@ const fetchHorario = async () => {
 
     <div class="grid grid-cols-12 gap-6">
       <div class="col-span-6">
-        <TablePersonal
-          :items="personalList"
-          :selected-id="selectedId"
-          @persona-data="toPersona"
-          @toggle-status="toggleEmployeeStatus"
-        />
+        <TablePersonal :items="personalList" :selected-id="selectedId" @persona-data="toPersona"
+          @toggle-status="toggleEmployeeStatus" />
       </div>
       <div class="col-span-6">
-        <SetTurnos
-          :items="horarioData"
-          :personallist="personalList"
-          @addPersonal="fetchHorario"
-          @deletePersonal="fetchHorario"
-        />
+        <SetTurnos :items="horarioData" :personallist="personalList" @addPersonal="fetchHorario"
+          @deletePersonal="fetchHorario" />
       </div>
     </div>
   </section>

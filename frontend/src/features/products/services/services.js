@@ -58,3 +58,27 @@ export async function getProductos(params = {}) {
 
   return data
 }
+
+export async function editProducto(id, body) {
+  const token = localStorage.getItem('user_token')
+
+  const response = await fetch(`${import.meta.env.VITE_API_STORE_URL}productos/editar/${id}`, {
+    method: 'PUT',
+    headers: {
+      'content-type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw {
+      status: response.status,
+      data,
+    }
+  }
+
+  return data
+}

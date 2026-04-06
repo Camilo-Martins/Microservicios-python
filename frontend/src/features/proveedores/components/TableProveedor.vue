@@ -20,7 +20,6 @@ const editing = ref({
   value: '',
 })
 
-let showHelp = ref(false)
 const emit = defineEmits(['updatedProveedor'])
 const { trigger } = useToast()
 const { sendData } = useEditProveedor()
@@ -86,39 +85,27 @@ const toggleEstado = async (proveedor) => {
 </script>
 
 <template>
-    
   <div class="max-h-96 overflow-y-auto rounded-xl shadow-sm border border-slate-200">
     <table
       class="min-w-full border-collapse text-sm overflow-y-auto bg-white rounded-xl shadow-sm border border-slate-200">
       <thead class="bg-slate-100 text-slate-600">
         <tr>
-          <th class="px-4 py-3 text-center" colspan="1">Estado</th>
           <th class="px-4 py-3 text-left" colspan="1">Nombre</th>
           <th class="px-4 py-3 text-center" colspan="1">Rut</th>
           <th class="px-4 py-3 text-center" colspan="1">Telefono</th>
           <th class="px-4 py-3 text-center" colspan="1">Email</th>
           <th class="px-4 py-3 text-center" colspan="1">Nombre Empresa</th>
           <th class="px-4 py-3 text-center" colspan="6">Observaciones</th>
-          <th class="px-4 py-3 text-center" colspan="1">Productos</th>
+          <th class="px-4 py-3 text-center" colspan="1">Estado</th>
         </tr>
       </thead>
 
       <tbody>
-        <tr v-for="proveedor in proveedoreslist" :key="proveedor.id" class="border-t hover:bg-slate-50 transition cursor-pointer hover:bg-slate-200" title="Haz doble clic para editar"
-          :class="[
+        <tr v-for="proveedor in proveedoreslist" :key="proveedor.id"
+          class="border-t hover:bg-slate-50 transition cursor-pointer hover:bg-slate-200"
+          title="Haz doble clic para editar" :class="[
             editing.id === proveedor.id ? 'bg-blue-100 ring-1 ring-blue-400' : 'hover:bg-slate-200',
           ]">
-          <!-- Nombre -->
-
-          <td class="px-4 py-3 text-center" colspan="1">
-            <button @click="toggleEstado(proveedor)" :class="proveedor.is_active
-                ? 'px-3 py-1 text-sm rounded bg-green-100 text-green-700 hover:bg-green-200'
-                : 'px-3 py-1 text-sm rounded bg-red-100 text-red-700 hover:bg-red-200'
-              ">
-              {{ proveedor.is_active ? 'Activo' : 'Inactivo' }}
-            </button>
-          </td>
-
           <!-- Nombre -->
           <td class="px-4 py-3 text-left truncate max-w-xs" colspan="1">
             <input v-if="editing.id === proveedor.id && editing.field === 'nombre_completo'" v-model="editing.value"
@@ -186,11 +173,14 @@ const toggleEstado = async (proveedor) => {
           </td>
 
           <!-- Productos -->
+
           <td class="px-4 py-3 text-center" colspan="1">
-             <RouterLink to="/panel/productos" class="px-3 py-1 text-sm rounded bg-green-100 text-green-700 hover:bg-green-200"
-        >
-          +
-        </RouterLink>
+            <button @click="toggleEstado(proveedor)" :class="proveedor.is_active
+                ? 'px-3 py-1 text-sm rounded bg-green-100 text-green-700 hover:bg-green-200'
+                : 'px-3 py-1 text-sm rounded bg-red-100 text-red-700 hover:bg-red-200'
+              ">
+              {{ proveedor.is_active ? 'Activo' : 'Inactivo' }}
+            </button>
           </td>
         </tr>
       </tbody>
