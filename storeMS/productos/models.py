@@ -8,7 +8,7 @@ class Producto(models.Model):
     nombre_producto = models.CharField(max_length=150)
     descripcion = models.TextField(blank=True, null=True)
 
-    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    precio = models.PositiveIntegerField(default=0)
     categoria = models.TextField(blank=True, null=True)
     proveedor = models.ForeignKey(
         Proveedor,

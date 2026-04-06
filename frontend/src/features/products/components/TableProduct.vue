@@ -54,6 +54,7 @@ const saveEdit = async (producto) => {
         return
     }
 
+    console.log([field], value)
     try {
         await sendData(producto.id, {
             [field]: value,
@@ -81,7 +82,6 @@ watch([categoriaSeleccionada, proveedorSeleccionado], () => {
         <h3 class="text-sm font-semibold text-slate-600 mb-3">Filtros</h3>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl">
-        
             <!-- Categoría -->
             <div>
                 <label class="block text-xs text-slate-500 mb-1"> Categoría </label>
@@ -159,7 +159,7 @@ watch([categoriaSeleccionada, proveedorSeleccionado], () => {
                             type="text" class="w-full rounded border border-slate-300 px-2 py-1"
                             @blur="saveEdit(productos)" @keyup.enter="saveEdit(productos)" @keyup.esc="cancelEdit" />
                         <span v-else class="block w-full cursor-pointer" @click="startEdit(productos, 'precio')">
-                            {{ productos.precio ? productos.precio : '0.00' }}
+                            ${{ productos.precio ? productos.precio : '0.00' }}
                         </span>
                     </td>
 
@@ -181,17 +181,15 @@ watch([categoriaSeleccionada, proveedorSeleccionado], () => {
 
                     <!-- Proveedor -->
                     <td class="px-4 py-3 text-center truncate max-w-xs" colspan="1">
-                        <select v-if="editing.id === productos.id && editing.field === 'proveedor'"
+                        <select v-if="editing.id === productos.id && editing.field === 'proveedor_id'"
                             v-model="editing.value" class="w-full rounded border border-slate-300 px-2 py-1"
                             @change="saveEdit(productos)" @keyup.esc="cancelEdit">
                             <option value="" disabled>Seleccione proveedor</option>
-                            <option v-for="proveedor in proveedores" :key="proveedor.id"
-                                :value="proveedor.nombre_completo">
+                            <option v-for="proveedor in proveedores" :key="proveedor.id" :value="proveedor.id">
                                 {{ proveedor.nombre_completo }}
                             </option>
                         </select>
-
-                        <span v-else class="block w-full cursor-pointer" @click="startEdit(productos, 'proveedor')">
+                        <span v-else class="block w-full cursor-pointer" @click="startEdit(productos, 'proveedor_id')">
                             {{ productos.proveedor || 'No definido' }}
                         </span>
                     </td>

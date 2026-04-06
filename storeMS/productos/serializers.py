@@ -49,14 +49,9 @@ class NewProductoSerializer(serializers.Serializer):
         max_length=500,
     )
 
-    precio = serializers.DecimalField(
+    precio = serializers.IntegerField(
         required=False,
-        max_digits=10,
-        decimal_places=2,
-        error_messages={
-            'required': 'El precio es obligatorio.',
-            'invalid': 'Ingrese un precio válido.',
-        }
+        min_value=0,
     )
 
     stock_minimo = serializers.IntegerField(
@@ -162,7 +157,7 @@ class EditarProductoSerializer(NewProductoSerializer):
         }
     )
 
-    proveedor_id = serializers.IntegerField(
+    proveedor_id = serializers.CharField(
         required=False,
         error_messages={
             'required': 'El proveedor es obligatorio.',

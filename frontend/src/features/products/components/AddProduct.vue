@@ -1,8 +1,9 @@
 <script setup>
-import { Form, Field } from 'vee-validate'
+import { Form, Field, ErrorMessage } from 'vee-validate'
 import BaseButton from '@/components/BaseButton.vue'
 import { useAddProducto } from '../composables/composables'
 import useToast from '@/stores/useToast'
+import { productSchema } from '../schemas/productSchema'
 
 const props = defineProps({
     proveedores: {
@@ -38,7 +39,7 @@ const submit = async (values, { resetForm }) => {
 <template>
     <!-- Formulario -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-8">
-        <Form @submit="submit" class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
+        <Form :validation-schema="productSchema" @submit="submit" class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
             <div class="form-field">
                 <div class="pb-3"><label class="form.label">Nombre Producto</label>:</div>
 
@@ -97,7 +98,12 @@ const submit = async (values, { resetForm }) => {
             </div>
 
             <BaseButton label="Agregar Personal" type="submit"> Agregar </BaseButton>
-            <span>!!</span>
+              <div class="form-field col-span-12">
+       <ErrorMessage name="nombre_producto" class="text-red-600 col-span-6 italic" />
+         <ErrorMessage name="precio" class="text-red-600 col-span-6 italic" />
+           <ErrorMessage name="stock" class="text-red-600 col-span-6 italic" />
+             
+      </div>
         </Form>
     </div>
 </template>

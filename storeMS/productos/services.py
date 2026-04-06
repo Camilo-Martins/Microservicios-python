@@ -23,7 +23,7 @@ class ProductoService:
 class NewProductoService:
     @staticmethod
     @transaction.atomic
-    def crear_producto(*,admin_id, nombre_producto, descripcion=None, precio=None, categoria=None, proveedor_id=None, stock_actual=0, stock_minimo=0, observaciones=None):
+    def crear_producto(*,admin_id, nombre_producto, descripcion=None, precio=0, categoria=None, proveedor_id=None, stock_actual=0, stock_minimo=0, observaciones=None):
 
         producto = Producto.objects.create(
             nombre_producto=nombre_producto,
@@ -45,7 +45,7 @@ class NewProductoService:
 class EditProductoService:
     @staticmethod
     @transaction.atomic
-    def editar_producto(*,  admin_id, id, nombre_producto=None, descripcion=None, precio=None, categoria=None, 
+    def editar_producto(*,  admin_id, id, nombre_producto=None, descripcion=None, precio=None, categoria=None, proveedor_id=None,
                         stock_actual=None, stock_minimo=None, observaciones=None, is_active=None):
         
         producto = get_object_or_404(
@@ -56,6 +56,7 @@ class EditProductoService:
 
         producto.nombre_producto = nombre_producto if nombre_producto is not None else producto.nombre_producto
         producto.descripcion = descripcion if descripcion is not None else producto.descripcion
+        producto.proveedor_id = proveedor_id if proveedor_id is not None else proveedor_id
         producto.precio = precio if precio is not None else producto.precio
         producto.categoria = categoria if categoria is not None else producto.categoria
         producto.stock_actual = stock_actual if stock_actual is not None else producto.stock_actual
