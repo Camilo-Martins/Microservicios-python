@@ -15,6 +15,7 @@ import PersonalView from '@/features/hr/views/PersonalView.vue'
 import PersonaView from '@/features/hr/views/PersonaView.vue'
 import HorarioView from '@/features/hr/views/HorarioView.vue'
 import Proveedor from '@/features/proveedores/Proveedor.vue'
+import Productos from '@/features/products/Productos.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -89,7 +90,7 @@ const router = createRouter({
         {
           path: '/panel/productos',
           name: 'productos',
-          component: HorarioView,
+          component: Productos,
         },
         {
           path: '/panel/proveedores',

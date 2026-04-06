@@ -265,10 +265,11 @@ class ProveedoresListBoxSerializer(serializers.Serializer):
 
     id = serializers.CharField(required=False, allow_blank=True)
     nombre_empresa = serializers.CharField(required=False, allow_blank=True)
+    nombre_completo = serializers.CharField(required=False, allow_blank=True)
     is_active = serializers.BooleanField(required=False)
     telefono = serializers.CharField(required=False, allow_blank=True)          
     email = serializers.EmailField(required=False, allow_blank=True)
 
     class Meta:
         model = Proveedor
-        fields = ("id", "admin_id", "nombre_empresa", "is_active", "telefono", "email")
+        fields = ("id", "admin_id", "nombre_completo", "nombre_empresa", "is_active", "telefono", "email")

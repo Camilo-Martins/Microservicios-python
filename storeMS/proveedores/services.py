@@ -13,7 +13,7 @@ class ProveedoresService:
         return proveedoresList
     
     def obtener_proveedores_por_admin_cbox(*, admin_id):
-        proveedoresList = Proveedor.objects.filter(admin_id=admin_id).order_by("-id", "-is_active")
+        proveedoresList = Proveedor.objects.filter(admin_id=admin_id, is_active=True).order_by("-id")
         return proveedoresList
 
 

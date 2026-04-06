@@ -9,14 +9,14 @@ class ProductoService:
     @staticmethod
     @transaction.atomic
 
-    def get_productos(*, admin_id, proveedor_id=None, categoria_id=None):
+    def get_productos(*, admin_id, proveedor=None, categoria=None):
         productos = Producto.objects.filter(admin_id=admin_id).order_by("-id")
 
-        if proveedor_id:
-            productos = productos.filter(proveedor_id=proveedor_id)
+        if proveedor:
+            productos = productos.filter(proveedor__nombre_completo__icontains=proveedor)
 
-        if categoria_id:
-            productos = productos.filter(categoria_id=categoria_id)
+        if categoria:
+            productos = productos.filter(categoria=categoria)
 
         return productos
     

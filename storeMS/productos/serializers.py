@@ -9,6 +9,18 @@ class ProductoSerializer(serializers.ModelSerializer):
         allow_blank=False,
     )
 
+    
+    id = serializers.CharField(required=False, allow_blank=True)
+    proveedor = serializers.CharField(required=False, allow_blank=True)
+    nombre_producto = serializers.CharField(required=False, allow_blank=True)          
+    descripcion = serializers.EmailField(required=False, allow_blank=True)
+    precio = serializers.CharField(required=False, allow_blank=True)
+    categoria = serializers.CharField(required=False, allow_blank=True)
+    is_active = serializers.BooleanField(required=False)
+    observaciones = serializers.CharField(required=False, allow_blank=True)
+    
+
+
     class Meta:
         model = Producto
         fields = '__all__'
@@ -75,10 +87,10 @@ class NewProductoSerializer(serializers.Serializer):
         }
     )
 
-    categoria_id = serializers.IntegerField(
+    categoria = serializers.CharField(
         required=False,
         error_messages={
-            'invalid': 'Ingrese un ID de categoría válido.',
+            'invalid': 'Ingrese un nombre de categoría válido.',
         }
     )
 

@@ -10,25 +10,25 @@ from .serializers import*
 from django.shortcuts import render
 
 # Create your views here.
-class ProductoViewSet(APIView):
+class ObtenerProductos(APIView):
 
-
-    def get_queryset(self, request):
+    @logueado()
+    def get(self, request):
         try:
             admin_id = get_admin_id_from_request(request)
         except Exception:
             return JsonResponse({"estado": "error", "msg": "Ha ocurrido un error"}, status=500)
         
-        proveedor_id = request.query_params.get('proveedor_id')
-        categoria_id = request.query_params.get('categoria_id')
+        proveedor = request.query_params.get('proveedor')
+        categoria = request.query_params.get('categoria')
 
         serializer = ProductoSerializer(data={"admin_id":admin_id})
         serializer.is_valid(raise_exception=True)
         
         productosList = ProductoService.get_productos(
             **serializer.validated_data,
-            proveedor_id=proveedor_id,
-            categoria_id=categoria_id
+            proveedor=proveedor,
+            categoria=categoria
         )
 
         datos_json = ProductoSerializer(productosList, many=True)
