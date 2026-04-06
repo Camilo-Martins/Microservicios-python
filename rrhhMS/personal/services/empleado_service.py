@@ -92,7 +92,7 @@ class PersonalActiveListService:
 class EditPersonalService:
     @staticmethod
     @transaction.atomic
-    def editar_empleado(*, admin_id, id, nombre_completo, telefono, rol, pago_diario, rut, medio_pago):
+    def editar_empleado(*, admin_id, id, nombre_completo, telefono, rol, pago_diario, rut=None, medio_pago):
     
         empleado = get_object_or_404(
             Empleado,
@@ -107,7 +107,7 @@ class EditPersonalService:
         empleado.telefono=telefono
         empleado.rol=rol
         empleado.pago_diario=pago_diario
-        empleado.rut=rut
+        empleado.rut = rut if rut is not None else empleado.rut
         empleado.medio_pago=medio_pago
         empleado.admin_id=admin_id
         empleado.save(update_fields=["nombre_completo", "telefono", "rol", "pago_diario", "rut", "medio_pago"])

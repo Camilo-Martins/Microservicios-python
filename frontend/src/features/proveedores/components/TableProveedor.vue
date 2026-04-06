@@ -59,7 +59,7 @@ const saveEdit = async (proveedor) => {
     emit('updatedProveedor')
     proveedor[field] = value
   } catch (error) {
-    trigger('El telefono o email ya existe, por favor ingrese uno diferente.', 'error')
+    trigger(error.data.rut)
   } finally {
     cancelEdit()
   }
@@ -80,7 +80,10 @@ const toggleEstado = async (proveedor) => {
 
     proveedor.is_active = nuevoEstado
     emit('updatedProveedor')
-  } catch (error) { }
+  } catch (error) {
+    console.log(error.value)
+    trigger("Error al actualizar proveedor")
+   }
 }
 </script>
 
@@ -134,8 +137,10 @@ const toggleEstado = async (proveedor) => {
               type="text" class="w-full rounded border border-slate-300 px-2 py-1" @blur="saveEdit(proveedor)"
               @keyup.enter="saveEdit(proveedor)" @keyup.esc="cancelEdit" />
 
-            <span v-else class="block w-full cursor-pointer" @click="startEdit(proveedor, 'telefono')">
-              {{ proveedor.telefono ? proveedor.telefono : 'No definido' }}
+
+              
+            <span v-else class="block w-full cursor-pointer" @click="startEdit(proveedor, 'telefono')" >
+              +{{ proveedor.telefono ? proveedor.telefono : 'No definido' }}
             </span>
           </td>
 

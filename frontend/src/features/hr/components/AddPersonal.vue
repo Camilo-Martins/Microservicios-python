@@ -38,7 +38,7 @@ const submit = async (values, { resetForm }) => {
     resetForm()
     emit('created')
   } catch (error) {
-    trigger(error)
+    trigger("Error al agregar pesonal")
   }
 }
 </script>

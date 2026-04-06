@@ -1,8 +1,26 @@
 # 📦 Sistema de Gestión de Tienda
 
+## 🎥 Demo
+
+[Video demostración del sistema](https://youtu.be/Q_tPNpHo7HE)
+
+---
+
+## 🎯 Descripción
+
 Este proyecto consiste en un sistema de gestión pensado para facilitar la administración básica de una tienda o negocio pequeño, priorizando la rapidez de uso, la claridad y la flexibilidad en la operación diaria.
 
 El objetivo principal no es sobrecargar al usuario con configuraciones complejas, sino permitirle comenzar rápidamente con lo esencial y expandir el uso del sistema de forma progresiva.
+
+---
+
+## 🚀 ¿Qué permite hacer este sistema?
+
+- Registrar productos rápidamente
+- Organizar proveedores y categorías
+- Gestionar personas asociadas al negocio
+- Administrar turnos de trabajo
+- Filtrar y editar información de forma directa
 
 ---
 
@@ -61,10 +79,24 @@ Esto se traduce en:
 
 - Posibilidad de asignar y relacionar información con personas dentro del sistema
 
+### 📅 Gestión de horario
+
+- Asignación de empleados por día
+- Visualización clara de turnos
+
 ### 📝 Gestión de notas
 
 - Sistema flexible para registrar información adicional
 - Permite adaptarse a distintos usos sin rigidizar el sistema
+
+---
+
+## 🛠️ Tecnologías utilizadas
+
+- Backend: Python + Django REST Framework
+- Frontend: Vue 3 + TailwindCSS
+- Validación: Vee-validate
+- Contenedores: Docker / Docker Compose
 
 ---
 
@@ -77,3 +109,11 @@ Este sistema no busca ser una solución compleja desde el inicio, sino:
 - Mantener un equilibrio entre simplicidad y funcionalidad
 
 La prioridad fue construir algo que funcione bien en escenarios reales, donde el tiempo y la claridad son factores clave.
+
+---
+
+## 📌 Estado del proyecto
+
+Proyecto funcional y listo para demostración.
+
+Diseñado como base para futuras extensiones, como un módulo de ventas desacoplado.

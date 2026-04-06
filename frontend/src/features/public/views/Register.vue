@@ -73,7 +73,7 @@ const submit = async () => {
         <div class="form-field">
           <label class="form.label">Contraseña</label>
           <Field type="password" name="password" class="form-input" v-model="password"
-            placeholder="Ej: Camilo Álvarez" />
+            placeholder="Ej: ***********" />
           <ErrorMessage name="password" class="text-red-700 font-bold uppercase" />
         </div>
 

@@ -51,12 +51,12 @@ watch(
 )
 
 const submit = async () => {
-  console.log(form.value.nombre_completo)
+  console.log(form.value)
   try {
     await sendData(id, {
       nombre_completo: form.value.nombre_completo,
       telefono: form.value.telefono,
-      rut: form.value.rut,
+      rut: form.value.rut ? form.value.rut : '',
       rol: form.value.rol,
       pago_diario: form.value.pago_diario,
       medio_pago: form.value.medio_pago,
@@ -67,7 +67,8 @@ const submit = async () => {
       router.push('/panel/personal')
     }, 1000)
   } catch (error) {
-    trigger(error)
+    console.log(error)
+    trigger("El telefono o Rut ya se encuentra registrado")
   }
 }
 </script>

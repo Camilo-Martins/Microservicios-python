@@ -5,7 +5,7 @@
     >
       <!-- Nombre del sistema -->
       <div class="text-center md:text-left">
-        <p class="text-base font-semibold text-blue-100">Sistema de gestión de tiendas</p>
+        <p class="text-base font-semibold text-blue-100">Sistema de Gestión de Tiendas</p>
         <p class="text-xs text-blue-300">Plataforma administrativa</p>
       </div>
 
@@ -18,7 +18,7 @@
 
       <!-- Copyright -->
       <div class="text-center md:text-right text-xs text-blue-300">
-        © {{ new Date().getFullYear() }} Camilo
+        © {{ new Date().getFullYear() }} Camilo Martins
         <span class="hidden md:inline">·</span>
         <span class="block md:inline">Todos los derechos reservados</span>
       </div>

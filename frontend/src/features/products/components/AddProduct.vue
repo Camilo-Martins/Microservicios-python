@@ -23,7 +23,7 @@ const submit = async (values, { resetForm }) => {
             descripcion: values.descripcion,
             precio: values.precio,
             stock_actual: values.stock,
-            categoria: values.categoria,
+            categoria: values.categoria?values.categoria:'NoDefinido',
             proveedor_id: values.proveedor,
         })
 
@@ -70,11 +70,15 @@ const submit = async (values, { resetForm }) => {
                 </div>
                 <Field as="select" class="form-input" name="categoria">
                     <option value="" disabled="">Seleccione</option>
-                    <option value="NoDefinido">No definido</option>
+                    <option value="">No definido</option>
                     <option value="Alimentos">Alimentos</option>
                     <option value="Bebidas">Bebidas</option>
                     <option value="Limpieza">Limpieza</option>
                     <option value="Higiene">Higiene Personal</option>
+                    <option value="Tecnologia">Tecnología</option>
+                    <option value="Escolares">Art. Escolares</option>
+                    <option value="Regalos">Regalos</option>
+                    <option value="Dulces">Dulces</option>
                 </Field>
             </div>
 
@@ -86,7 +90,7 @@ const submit = async (values, { resetForm }) => {
                 <Field as="select" class="form-input" name="proveedor">
                     <option value="" disabled="">Seleccionar</option>
                     <option v-for="proveedor in proveedores" :key="proveedor.id" :value="proveedor.id">
-                        {{ proveedor.nombre_completo }}
+                        {{ proveedor.nombre_completo }} - ( {{ proveedor.nombre_empresa }} )
                     </option>
                 </Field>
             </div>

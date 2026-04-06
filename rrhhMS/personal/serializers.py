@@ -158,7 +158,7 @@ class EditPersonalSerializer(serializers.Serializer):
     telefono = serializers.CharField(
         required=True,
         allow_blank=False,
-        min_length=11,
+        min_length=8,
         max_length=11,
         validators=[
         RegexValidator(
@@ -170,19 +170,21 @@ class EditPersonalSerializer(serializers.Serializer):
     medio_pago = serializers.CharField(required=False, allow_blank=True)
     pago_diario = serializers.CharField(required=False,  allow_blank=True)
     rut = serializers.CharField(
-        required=True,
-        allow_blank=False,
+        required=False,
+        allow_blank=True,
         max_length=13,
     )
 	
     def validate_rut(self, value):
-        id = self.context.get("id")
-        if Empleado.objects.filter(rut=value).exclude(id=id).exists():
-            raise serializers.ValidationError("Personal ya existe.")
-        return value
+        if value is not None and value != "":
+            id = self.context.get("id")
+            if Empleado.objects.filter(rut=value).exclude(id=id).exists():
+                raise serializers.ValidationError("Personal ya existe.")
+            return value
     
     def validate_telefono(self, value):
-        id = self.context.get("id")
-        if Empleado.objects.filter(telefono=value).exclude(id=id).exists():
-            raise serializers.ValidationError("Personal ya existe.")
-        return value
+        if value is not None and value != "":
+            id = self.context.get("id")
+            if Empleado.objects.filter(telefono=value).exclude(id=id).exists():
+                raise serializers.ValidationError("Personal ya existe.")
+            return value

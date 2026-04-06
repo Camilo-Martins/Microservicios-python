@@ -93,6 +93,10 @@ watch([categoriaSeleccionada, proveedorSeleccionado], () => {
                     <option value="Bebidas">Bebidas</option>
                     <option value="Limpieza">Limpieza</option>
                     <option value="Higiene">Higiene Personal</option>
+                     <option value="Tecnologia">Tecnología</option>
+                    <option value="Escolares">Art. Escolares</option>
+                    <option value="Regalos">Regalos</option>
+                    <option value="Dulces">Dulces</option>
                 </select>
             </div>
 

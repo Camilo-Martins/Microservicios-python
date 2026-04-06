@@ -4,8 +4,8 @@ export const productSchema = yup.object({
   nombre_producto: yup
     .string()
     .required('*El campo nombre es obligatorio/ ')
-    .min(4, '*Ingrese nombre válido/ ')
-    .max(20, '*Ingrese nombre válido/ ')
+    .min(2, '*Ingrese nombre válido/ ')
+    .max(50, '*Ingrese nombre válido/ ')
     .matches(/^[a-zA-Z0-9 ]+$/, '*Solo se permiten letras, números y espacios/ '),
   precio: yup
     .string()

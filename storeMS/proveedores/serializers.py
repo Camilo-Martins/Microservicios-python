@@ -79,12 +79,7 @@ class NewProveedorSerializer(serializers.Serializer):
         required=False,     
         allow_blank=True,
         max_length=12,
-        validators=[
-            RegexValidator(
-                regex=r'^\d{7,8}-[kK\d]$',
-                message="El RUT debe tener el formato XXXXXXXX-X, donde X es un dígito y el último dígito puede ser un número o 'K'."
-            )
-        ])
+       )
     
     nombre_empresa = serializers.CharField(
         required=True,
@@ -190,12 +185,7 @@ class EditProveedorSerializer(serializers.Serializer):
         required=False,     
         allow_blank=True,
         max_length=12,
-        validators=[
-            RegexValidator(
-                regex=r'^\d{7,8}-[kK\d]$',
-                message="El RUT debe tener el formato XXXXXXXX-X, donde X es un dígito y el último dígito puede ser un número o 'K'."
-            )
-        ])
+       )
     
     nombre_empresa = serializers.CharField(
         required=False,
