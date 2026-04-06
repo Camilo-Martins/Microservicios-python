@@ -80,9 +80,9 @@ const submit = async (values, { resetForm }) => {
 
         <Field type="text" name="observaciones" class="form-input" placeholder="Solo reparte los lunes" />
       </div>
-      <ErrorMessage name="nombre_completo" class="text-red-600 col-span-12" />
-      <ErrorMessage name="telefono" class="text-red-600 col-span-12" />
-      <ErrorMessage name="nombre_empresa" class="text-red-600 col-span-12" />
+      <ErrorMessage name="nombre_completo" class="text-red-600 col-span-12 italic" />
+      <ErrorMessage name="telefono" class="text-red-600 col-span-12 italic" />
+      <ErrorMessage name="nombre_empresa" class="text-red-600 col-span-12 italic" />
       <BaseButton class="col-span-12" label="Agregar Personal" type="submit"> Agregar </BaseButton>
     </Form>
   </div>

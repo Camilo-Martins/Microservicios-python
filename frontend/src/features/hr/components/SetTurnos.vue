@@ -59,9 +59,6 @@ const onEliminarEmpleado = async (dia, personal) => {
   }
 }
 
-const onPagarEmpleado = async (personal) => {
-  console.log(personal)
-}
 </script>
 
 <template>

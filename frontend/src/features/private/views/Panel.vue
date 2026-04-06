@@ -80,7 +80,7 @@ const submit = async () => {
     observaciones.value = ''
     getNota()
   } catch (error) {
-    trigger("Debe ingresar un nombre para la nota")
+    trigger('Debe ingresar un nombre para la nota')
   }
 }
 

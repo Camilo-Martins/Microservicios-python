@@ -54,7 +54,6 @@ const saveEdit = async (producto) => {
         return
     }
 
-    console.log([field], value)
     try {
         await sendData(producto.id, {
             [field]: value,
@@ -89,11 +88,11 @@ watch([categoriaSeleccionada, proveedorSeleccionado], () => {
                 <select v-model="categoriaSeleccionada"
                     class="w-full max-w-xs rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:ring-1 focus:ring-slate-400">
                     <option value="">Todas</option>
-                    <option value="Alimentos">No definido</option>
+                    <option value="NoDefinido">No definido</option>
                     <option value="Alimentos">Alimentos</option>
                     <option value="Bebidas">Bebidas</option>
                     <option value="Limpieza">Limpieza</option>
-                    <option value="Higiene Personal">Higiene Personal</option>
+                    <option value="Higiene">Higiene Personal</option>
                 </select>
             </div>
 
@@ -175,7 +174,7 @@ watch([categoriaSeleccionada, proveedorSeleccionado], () => {
                         </select>
 
                         <span v-else class="block w-full cursor-pointer" @click="startEdit(productos, 'categoria')">
-                            {{ productos.categoria || 'No definido' }}
+                            {{ productos.categoria == 'NoDefinido' ? 'No definido' : productos.categoria }}
                         </span>
                     </td>
 

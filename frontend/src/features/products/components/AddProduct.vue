@@ -30,8 +30,8 @@ const submit = async (values, { resetForm }) => {
         emit('addProduct')
         resetForm()
     } catch (error) {
-        console.log( error)
-       trigger('Ingrese nombre para agregar el producto', 'error')
+        console.log(error)
+        trigger('Ingrese nombre para agregar el producto', 'error')
     }
 }
 </script>
@@ -39,7 +39,8 @@ const submit = async (values, { resetForm }) => {
 <template>
     <!-- Formulario -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-8">
-        <Form :validation-schema="productSchema" @submit="submit" class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
+        <Form :validation-schema="productSchema" @submit="submit"
+            class="grid grid-cols-1 md:grid-cols-7 gap-4 items-end">
             <div class="form-field">
                 <div class="pb-3"><label class="form.label">Nombre Producto</label>:</div>
 
@@ -69,6 +70,7 @@ const submit = async (values, { resetForm }) => {
                 </div>
                 <Field as="select" class="form-input" name="categoria">
                     <option value="" disabled="">Seleccione</option>
+                    <option value="NoDefinido">No definido</option>
                     <option value="Alimentos">Alimentos</option>
                     <option value="Bebidas">Bebidas</option>
                     <option value="Limpieza">Limpieza</option>
@@ -98,12 +100,11 @@ const submit = async (values, { resetForm }) => {
             </div>
 
             <BaseButton label="Agregar Personal" type="submit"> Agregar </BaseButton>
-              <div class="form-field col-span-12">
-       <ErrorMessage name="nombre_producto" class="text-red-600 col-span-6 italic" />
-         <ErrorMessage name="precio" class="text-red-600 col-span-6 italic" />
-           <ErrorMessage name="stock" class="text-red-600 col-span-6 italic" />
-             
-      </div>
+            <div class="form-field col-span-12">
+                <ErrorMessage name="nombre_producto" class="text-red-600 col-span-6 italic" />
+                <ErrorMessage name="precio" class="text-red-600 col-span-6 italic" />
+                <ErrorMessage name="stock" class="text-red-600 col-span-6 italic" />
+            </div>
         </Form>
     </div>
 </template>
